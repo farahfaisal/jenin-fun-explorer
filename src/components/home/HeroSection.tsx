@@ -10,18 +10,21 @@ const HeroSection = () => {
     <section 
       className="relative bg-cover bg-center py-32" 
       style={{ 
-        backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url(https://images.unsplash.com/photo-1508433957232-3107f5fd5995?auto=format&fit=crop&q=80&w=1080)',
+        backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(https://images.unsplash.com/photo-1551038247-3d9af20df552?auto=format&fit=crop&q=80&w=1080)',
         position: 'relative',
         zIndex: 1,
       }}
     >
-      {/* إضافة شريط ألوان علم فلسطين */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <div className="w-full h-full flex flex-col">
-          <div className="bg-black h-1/3 w-full"></div>
-          <div className="bg-white h-1/3 w-full"></div>
-          <div className="bg-accent h-1/3 w-full"></div>
-          <div className="absolute left-0 h-full w-1/4 bg-primary"></div>
+      {/* علم فلسطين مرفوع فوق المبنى */}
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-5 z-10">
+        <div className="w-20 h-32 relative shadow-lg">
+          <div className="absolute inset-0 flex flex-col">
+            <div className="bg-black h-1/3 w-full"></div>
+            <div className="bg-white h-1/3 w-full"></div>
+            <div className="bg-accent h-1/3 w-full"></div>
+          </div>
+          <div className="absolute left-0 h-full w-1/3 bg-primary"></div>
+          <div className="absolute top-0 left-0 w-1 h-40 bg-gray-800 transform -translate-x-1"></div>
         </div>
       </div>
       
