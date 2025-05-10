@@ -1,6 +1,7 @@
+
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Calendar, Hotel, MapPin as ParkIcon, Home } from 'lucide-react';
+import { MapPin, Calendar, Hotel, MapPin as ParkIcon, Home, Users } from 'lucide-react';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,6 +13,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Temporary mock data
 const activityData = {
@@ -21,6 +24,15 @@ const activityData = {
   categoryLabel: 'فندق',
   icon: Hotel,
   owner: 'شركة الفنادق الدولية',
+  ownerProfile: {
+    id: 1,
+    name: 'شركة الفنادق الدولية',
+    image: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&q=80&w=300',
+    bio: 'شركة متخصصة في إدارة الفنادق الفاخرة في فلسطين منذ عام 2005. نهدف إلى تقديم تجربة إقامة استثنائية مع الحفاظ على الطابع المحلي الأصيل.',
+    phone: '+970 59 123 4567',
+    email: 'contact@palestine-hotels.com',
+    activitiesCount: 3
+  },
   location: 'وسط المدينة، جنين',
   description: 'فندق فاخر يقع في قلب مدينة جنين، يوفر إطلالات خلابة على المدينة والتلال المحيطة بها. يضم الفندق 120 غرفة مجهزة بأحدث وسائل الراحة، بالإضافة إلى مطعمين ومركز للياقة البدنية وقاعات للاجتماعات والمناسبات.',
   rating: 4.8,
@@ -191,6 +203,35 @@ const ActivityDetail = () => {
             <span>احجز الآن</span>
           </Button>
         </div>
+
+        {/* Owner Card - New Section */}
+        <Card className="mt-8 border-primary/20">
+          <CardHeader className="flex flex-row items-center gap-4">
+            <Avatar className="h-14 w-14">
+              <AvatarImage src={activity.ownerProfile?.image} alt={activity.owner} />
+              <AvatarFallback>{activity.owner?.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div>
+              <CardTitle className="text-xl">{activity.owner}</CardTitle>
+              <CardDescription className="mt-1 text-sm">
+                مالك النشاط • {activity.ownerProfile?.activitiesCount} نشاط ترفيهي
+              </CardDescription>
+            </div>
+            <div className="mr-auto">
+              <Link to={`/owner/${activity.ownerProfile?.id}`}>
+                <Button variant="secondary" size="sm" className="gap-2">
+                  <Users size={16} />
+                  عرض الملف الشخصي
+                </Button>
+              </Link>
+            </div>
+          </CardHeader>
+          {activity.ownerProfile?.bio && (
+            <CardContent>
+              <p className="text-sm text-muted-foreground">{activity.ownerProfile?.bio}</p>
+            </CardContent>
+          )}
+        </Card>
 
         {/* Tabs Section */}
         <Tabs defaultValue="overview" className="mt-8">

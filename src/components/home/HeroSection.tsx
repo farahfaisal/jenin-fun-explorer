@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Child, Flag } from 'lucide-react';
+import { Users } from 'lucide-react';
 
 const HeroSection = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,7 +19,7 @@ const HeroSection = () => {
       {/* طفل يحمل علم فلسطين في الحديقة */}
       <div className="absolute bottom-20 right-10 z-10 flex items-end animate-bounce">
         <div className="relative">
-          <Child size={80} className="text-white" />
+          <Users size={80} className="text-white" />
           <div className="absolute -top-14 -right-4 transform -rotate-12">
             <div className="w-16 h-24 relative shadow-lg">
               <div className="absolute inset-0 flex flex-col">
