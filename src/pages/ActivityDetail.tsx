@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { MapPin, Calendar, Hotel, MapPin as ParkIcon, Home, Users } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { MapPin, Calendar, Hotel, MapPin as ParkIcon, Home, Users, Lock, LogIn } from 'lucide-react';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -15,6 +14,8 @@ import {
 } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { useAuth } from '@/contexts/AuthContext';
 
 // Temporary mock data
 const activityData = {
@@ -122,6 +123,8 @@ const ActivityDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [activity, setActivity] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Simulate fetching data from an API
@@ -131,6 +134,15 @@ const ActivityDetail = () => {
       setIsLoading(false);
     }, 500);
   }, [id]);
+
+  // Check if user has access to view detailed activity info
+  const hasDetailedAccess = isAuthenticated;
+  
+  // Check if user is the owner of this activity
+  const isOwner = user?.role === 'owner' && user?.ownedActivities?.includes(Number(id));
+  
+  // Check if user is an admin
+  const isAdmin = user?.role === 'admin';
 
   if (isLoading) {
     return (
@@ -161,6 +173,10 @@ const ActivityDetail = () => {
       </Layout>
     );
   }
+
+  const handleLoginRedirect = () => {
+    navigate('/login');
+  };
 
   return (
     <Layout>
@@ -204,7 +220,22 @@ const ActivityDetail = () => {
           </Button>
         </div>
 
-        {/* Owner Card - New Section */}
+        {/* Restricted Access Message */}
+        {!hasDetailedAccess && (
+          <Alert className="mt-8 border-primary/20">
+            <Lock className="h-4 w-4" />
+            <AlertTitle>محتوى مقيد</AlertTitle>
+            <AlertDescription className="flex flex-col gap-4">
+              <p>يجب تسجيل الدخول لعرض المعلومات التفصيلية لهذا النشاط.</p>
+              <Button onClick={handleLoginRedirect} className="w-full sm:w-auto">
+                <LogIn className="ml-2" size={16} />
+                تسجيل الدخول لعرض التفاصيل
+              </Button>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Owner Card - Visible to all */}
         <Card className="mt-8 border-primary/20">
           <CardHeader className="flex flex-row items-center gap-4">
             <Avatar className="h-14 w-14">
@@ -233,57 +264,80 @@ const ActivityDetail = () => {
           )}
         </Card>
 
-        {/* Tabs Section */}
-        <Tabs defaultValue="overview" className="mt-8">
-          <TabsList>
-            <TabsTrigger value="overview">نظرة عامة</TabsTrigger>
-            <TabsTrigger value="amenities">المرافق</TabsTrigger>
-            <TabsTrigger value="reviews">التقييمات</TabsTrigger>
-            <TabsTrigger value="contact">معلومات الاتصال</TabsTrigger>
-          </TabsList>
-          <TabsContent value="overview" className="mt-4 space-y-2">
-            <p>{activity.description}</p>
-          </TabsContent>
-          <TabsContent value="amenities" className="mt-4 space-y-2">
-            <h3 className="text-xl font-semibold mb-2">المرافق المتوفرة:</h3>
-            <ul className="list-disc list-inside">
-              {activity.amenities.map((amenity, index) => (
-                <li key={index}>{amenity}</li>
+        {/* Tabs Section - Only visible to authenticated users */}
+        {hasDetailedAccess && (
+          <Tabs defaultValue="overview" className="mt-8">
+            <TabsList>
+              <TabsTrigger value="overview">نظرة عامة</TabsTrigger>
+              <TabsTrigger value="amenities">المرافق</TabsTrigger>
+              <TabsTrigger value="reviews">التقييمات</TabsTrigger>
+              <TabsTrigger value="contact">معلومات الاتصال</TabsTrigger>
+              {(isOwner || isAdmin) && <TabsTrigger value="admin">إدارة النشاط</TabsTrigger>}
+            </TabsList>
+            <TabsContent value="overview" className="mt-4 space-y-2">
+              <p>{activity.description}</p>
+            </TabsContent>
+            <TabsContent value="amenities" className="mt-4 space-y-2">
+              <h3 className="text-xl font-semibold mb-2">المرافق المتوفرة:</h3>
+              <ul className="list-disc list-inside">
+                {activity.amenities.map((amenity, index) => (
+                  <li key={index}>{amenity}</li>
+                ))}
+              </ul>
+            </TabsContent>
+            <TabsContent value="reviews" className="mt-4 space-y-2">
+              <h3 className="text-xl font-semibold mb-2">التقييمات:</h3>
+              {activity.reviews.map((review) => (
+                <div key={review.id} className="border rounded-md p-4 mb-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold">{review.user}</span>
+                    <span className="text-gray-600">{review.date}</span>
+                  </div>
+                  <div className="flex items-center mt-1">
+                    <span>التقييم: {review.rating}</span>
+                  </div>
+                  <p className="mt-2">{review.comment}</p>
+                </div>
               ))}
-            </ul>
-          </TabsContent>
-          <TabsContent value="reviews" className="mt-4 space-y-2">
-            <h3 className="text-xl font-semibold mb-2">التقييمات:</h3>
-            {activity.reviews.map((review) => (
-              <div key={review.id} className="border rounded-md p-4 mb-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold">{review.user}</span>
-                  <span className="text-gray-600">{review.date}</span>
+            </TabsContent>
+            <TabsContent value="contact" className="mt-4 space-y-2">
+              <h3 className="text-xl font-semibold mb-2">معلومات الاتصال:</h3>
+              <p>
+                <strong>هاتف:</strong> {activity.contactPhone}
+              </p>
+              <p>
+                <strong>البريد الإلكتروني:</strong> {activity.contactEmail}
+              </p>
+              <p>
+                <strong>الموقع الإلكتروني:</strong>{' '}
+                <a href={activity.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                  {activity.website}
+                </a>
+              </p>
+            </TabsContent>
+            
+            {/* Admin/Owner Panel - Only visible to activity owners and admins */}
+            {(isOwner || isAdmin) && (
+              <TabsContent value="admin" className="mt-4 space-y-2">
+                <h3 className="text-xl font-semibold mb-2">إدارة النشاط:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Button variant="outline" className="gap-2">
+                    تعديل مع��ومات النشاط
+                  </Button>
+                  <Button variant="outline" className="gap-2">
+                    إدارة الحجوزات
+                  </Button>
+                  <Button variant="outline" className="gap-2">
+                    إضافة صور جديدة
+                  </Button>
+                  <Button variant="outline" className="gap-2">
+                    عرض الإحصائيات
+                  </Button>
                 </div>
-                <div className="flex items-center mt-1">
-                  {/* You can use star icons here to display the rating */}
-                  <span>التقييم: {review.rating}</span>
-                </div>
-                <p className="mt-2">{review.comment}</p>
-              </div>
-            ))}
-          </TabsContent>
-          <TabsContent value="contact" className="mt-4 space-y-2">
-            <h3 className="text-xl font-semibold mb-2">معلومات الاتصال:</h3>
-            <p>
-              <strong>هاتف:</strong> {activity.contactPhone}
-            </p>
-            <p>
-              <strong>البريد الإلكتروني:</strong> {activity.contactEmail}
-            </p>
-            <p>
-              <strong>الموقع الإلكتروني:</strong>{' '}
-              <a href={activity.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                {activity.website}
-              </a>
-            </p>
-          </TabsContent>
-        </Tabs>
+              </TabsContent>
+            )}
+          </Tabs>
+        )}
 
         {/* Back to Activities Button */}
         <div className="mt-8">
