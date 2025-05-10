@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Calendar, Hotel, Park, Home } from 'lucide-react';
+import { MapPin, Calendar, Hotel, Tree, Home } from 'lucide-react';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -70,7 +70,7 @@ const activitiesData = [
     name: 'حديقة السلام',
     category: 'parks',
     categoryLabel: 'حديقة',
-    icon: Park,
+    icon: Tree,
     owner: 'بلدية جنين',
     location: 'شارع الحدائق، شرق جنين',
     description: 'حديقة عامة واسعة مع مساحات خضراء شاسعة وملاعب للأطفال ومناطق مخصصة للشواء والنزهات العائلية. تضم الحديقة مسارات للمشي وركوب الدراجات، ونافورة مياه جميلة في المنتصف. مكان مثالي لقضاء يوم ممتع مع العائلة والأصدقاء في أحضان الطبيعة.',

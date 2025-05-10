@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, MapPin, Hotel, Park, Home } from 'lucide-react';
+import { Search, MapPin, Hotel, Tree, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Layout from '@/components/Layout';
 
@@ -24,14 +24,14 @@ const categories = [
   {
     id: 'parks',
     name: 'الحدائق',
-    icon: <Park size={24} className="mb-2" />,
+    icon: <Tree size={24} className="mb-2" />,
     image: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&q=80&w=1080',
     count: 5
   },
   {
     id: 'clubs',
     name: 'النوادي',
-    icon: <Park size={24} className="mb-2" />,
+    icon: <Tree size={24} className="mb-2" />,
     image: 'https://images.unsplash.com/photo-1574936145840-28808d77a0b6?auto=format&fit=crop&q=80&w=1080',
     count: 7
   },
