@@ -1,21 +1,17 @@
+
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapPin, Calendar, Hotel, MapPin as ParkIcon, Home, Users, Lock, LogIn } from 'lucide-react';
+import { MapPin, Hotel, MapPin as ParkIcon, Home } from 'lucide-react';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
-import { 
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Activity } from '@/types/activity';
 import { useAuth } from '@/contexts/AuthContext';
+import { ActivityImageGallery } from '@/components/activities/ActivityImageGallery';
+import { ActivityHeader } from '@/components/activities/ActivityHeader';
+import { ActivityAuthAlert } from '@/components/activities/ActivityAuthAlert';
+import { ActivityOwnerCard } from '@/components/activities/ActivityOwnerCard';
+import { ActivityDetailTabs } from '@/components/activities/ActivityDetailTabs';
 
 // Temporary mock data
 const activityData = {
@@ -121,7 +117,7 @@ const otherActivities = [
 
 const ActivityDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [activity, setActivity] = useState(null);
+  const [activity, setActivity] = useState<Activity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -130,7 +126,7 @@ const ActivityDetail = () => {
     // Simulate fetching data from an API
     setTimeout(() => {
       const foundActivity = otherActivities.find((item) => item.id === Number(id));
-      setActivity(foundActivity);
+      setActivity(foundActivity as Activity);
       setIsLoading(false);
     }, 500);
   }, [id]);
@@ -143,6 +139,10 @@ const ActivityDetail = () => {
   
   // Check if user is an admin
   const isAdmin = user?.role === 'admin';
+
+  const handleLoginRedirect = () => {
+    navigate('/login');
+  };
 
   if (isLoading) {
     return (
@@ -174,169 +174,47 @@ const ActivityDetail = () => {
     );
   }
 
-  const handleLoginRedirect = () => {
-    navigate('/login');
-  };
-
   return (
     <Layout>
       <div className="container mx-auto px-6 py-12">
-        {/* Hero Section */}
-        <div className="relative rounded-lg overflow-hidden shadow-md">
-          <Carousel className="w-full">
-            <CarouselContent className="-ml-1 pl-1">
-              {activity.images.map((image, index) => (
-                <CarouselItem key={index} className="basis-1/1 md:basis-1/2 lg:basis-1/3">
-                  <div className="p-1">
-                    <img src={image} alt={activity.name} className="w-full aspect-video object-cover rounded-md" />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
-          <div className="absolute top-4 right-4 bg-white bg-opacity-75 rounded-md py-1 px-2">
-            <span className="text-sm font-semibold">{activity.rating}</span>
-          </div>
-        </div>
+        {/* Hero Section with Image Gallery */}
+        <ActivityImageGallery 
+          images={activity.images} 
+          name={activity.name} 
+          rating={activity.rating}
+        />
 
-        {/* Activity Information */}
-        <div className="flex items-center justify-between mt-6">
-          <div>
-            <h1 className="text-3xl font-bold">{activity.name}</h1>
-            <div className="flex items-center text-gray-600 mt-2">
-              {activity.icon ? <activity.icon size={20} className="ml-2" /> : <MapPin size={20} className="ml-2" />}
-              <span>{activity.categoryLabel}</span>
-            </div>
-            <div className="flex items-center text-gray-600 mt-1">
-              <MapPin size={16} className="ml-1" />
-              <span>{activity.location}</span>
-            </div>
-          </div>
-          <Button variant="outline">
-            <Calendar size={16} className="ml-2" />
-            <span>احجز الآن</span>
-          </Button>
-        </div>
+        {/* Activity Header Information */}
+        <ActivityHeader 
+          name={activity.name}
+          icon={activity.icon}
+          categoryLabel={activity.categoryLabel}
+          location={activity.location}
+        />
 
         {/* Restricted Access Message */}
         {!hasDetailedAccess && (
-          <Alert className="mt-8 border-primary/20">
-            <Lock className="h-4 w-4" />
-            <AlertTitle>محتوى مقيد</AlertTitle>
-            <AlertDescription className="flex flex-col gap-4">
-              <p>يجب تسجيل الدخول لعرض المعلومات التفصيلية لهذا النشاط.</p>
-              <Button onClick={handleLoginRedirect} className="w-full sm:w-auto">
-                <LogIn className="ml-2" size={16} />
-                تسجيل الدخول لعرض التفاصيل
-              </Button>
-            </AlertDescription>
-          </Alert>
+          <ActivityAuthAlert onLoginClick={handleLoginRedirect} />
         )}
 
         {/* Owner Card - Visible to all */}
-        <Card className="mt-8 border-primary/20">
-          <CardHeader className="flex flex-row items-center gap-4">
-            <Avatar className="h-14 w-14">
-              <AvatarImage src={activity.ownerProfile?.image} alt={activity.owner} />
-              <AvatarFallback>{activity.owner?.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div>
-              <CardTitle className="text-xl">{activity.owner}</CardTitle>
-              <CardDescription className="mt-1 text-sm">
-                مالك النشاط • {activity.ownerProfile?.activitiesCount} نشاط ترفيهي
-              </CardDescription>
-            </div>
-            <div className="mr-auto">
-              <Link to={`/owner/${activity.ownerProfile?.id}`}>
-                <Button variant="secondary" size="sm" className="gap-2">
-                  <Users size={16} />
-                  عرض الملف الشخصي
-                </Button>
-              </Link>
-            </div>
-          </CardHeader>
-          {activity.ownerProfile?.bio && (
-            <CardContent>
-              <p className="text-sm text-muted-foreground">{activity.ownerProfile?.bio}</p>
-            </CardContent>
-          )}
-        </Card>
+        <ActivityOwnerCard 
+          owner={activity.owner}
+          ownerProfile={activity.ownerProfile}
+        />
 
         {/* Tabs Section - Only visible to authenticated users */}
         {hasDetailedAccess && (
-          <Tabs defaultValue="overview" className="mt-8">
-            <TabsList>
-              <TabsTrigger value="overview">نظرة عامة</TabsTrigger>
-              <TabsTrigger value="amenities">المرافق</TabsTrigger>
-              <TabsTrigger value="reviews">التقييمات</TabsTrigger>
-              <TabsTrigger value="contact">معلومات الاتصال</TabsTrigger>
-              {(isOwner || isAdmin) && <TabsTrigger value="admin">إدارة النشاط</TabsTrigger>}
-            </TabsList>
-            <TabsContent value="overview" className="mt-4 space-y-2">
-              <p>{activity.description}</p>
-            </TabsContent>
-            <TabsContent value="amenities" className="mt-4 space-y-2">
-              <h3 className="text-xl font-semibold mb-2">المرافق المتوفرة:</h3>
-              <ul className="list-disc list-inside">
-                {activity.amenities.map((amenity, index) => (
-                  <li key={index}>{amenity}</li>
-                ))}
-              </ul>
-            </TabsContent>
-            <TabsContent value="reviews" className="mt-4 space-y-2">
-              <h3 className="text-xl font-semibold mb-2">التقييمات:</h3>
-              {activity.reviews.map((review) => (
-                <div key={review.id} className="border rounded-md p-4 mb-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold">{review.user}</span>
-                    <span className="text-gray-600">{review.date}</span>
-                  </div>
-                  <div className="flex items-center mt-1">
-                    <span>التقييم: {review.rating}</span>
-                  </div>
-                  <p className="mt-2">{review.comment}</p>
-                </div>
-              ))}
-            </TabsContent>
-            <TabsContent value="contact" className="mt-4 space-y-2">
-              <h3 className="text-xl font-semibold mb-2">معلومات الاتصال:</h3>
-              <p>
-                <strong>هاتف:</strong> {activity.contactPhone}
-              </p>
-              <p>
-                <strong>البريد الإلكتروني:</strong> {activity.contactEmail}
-              </p>
-              <p>
-                <strong>الموقع الإلكتروني:</strong>{' '}
-                <a href={activity.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                  {activity.website}
-                </a>
-              </p>
-            </TabsContent>
-            
-            {/* Admin/Owner Panel - Only visible to activity owners and admins */}
-            {(isOwner || isAdmin) && (
-              <TabsContent value="admin" className="mt-4 space-y-2">
-                <h3 className="text-xl font-semibold mb-2">إدارة النشاط:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Button variant="outline" className="gap-2">
-                    تعديل مع��ومات النشاط
-                  </Button>
-                  <Button variant="outline" className="gap-2">
-                    إدارة الحجوزات
-                  </Button>
-                  <Button variant="outline" className="gap-2">
-                    إضافة صور جديدة
-                  </Button>
-                  <Button variant="outline" className="gap-2">
-                    عرض الإحصائيات
-                  </Button>
-                </div>
-              </TabsContent>
-            )}
-          </Tabs>
+          <ActivityDetailTabs 
+            description={activity.description}
+            amenities={activity.amenities}
+            reviews={activity.reviews}
+            contactPhone={activity.contactPhone}
+            contactEmail={activity.contactEmail}
+            website={activity.website}
+            isOwner={isOwner}
+            isAdmin={isAdmin}
+          />
         )}
 
         {/* Back to Activities Button */}
