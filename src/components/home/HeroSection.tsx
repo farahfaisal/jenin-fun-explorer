@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Users } from 'lucide-react';
+import { Flag } from 'lucide-react';
 
 const HeroSection = () => {
   const [searchQuery, setSearchQuery] = useState('');
