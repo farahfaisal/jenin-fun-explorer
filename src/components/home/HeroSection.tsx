@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Child, Flag } from 'lucide-react';
 
 const HeroSection = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -10,21 +11,26 @@ const HeroSection = () => {
     <section 
       className="relative bg-cover bg-center py-32" 
       style={{ 
-        backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(https://images.unsplash.com/photo-1551038247-3d9af20df552?auto=format&fit=crop&q=80&w=1080)',
+        backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=1080)',
         position: 'relative',
         zIndex: 1,
       }}
     >
-      {/* علم فلسطين مرفوع فوق المبنى */}
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-5 z-10">
-        <div className="w-20 h-32 relative shadow-lg">
-          <div className="absolute inset-0 flex flex-col">
-            <div className="bg-black h-1/3 w-full"></div>
-            <div className="bg-white h-1/3 w-full"></div>
-            <div className="bg-accent h-1/3 w-full"></div>
+      {/* طفل يحمل علم فلسطين في الحديقة */}
+      <div className="absolute bottom-20 right-10 z-10 flex items-end animate-bounce">
+        <div className="relative">
+          <Child size={80} className="text-white" />
+          <div className="absolute -top-14 -right-4 transform -rotate-12">
+            <div className="w-16 h-24 relative shadow-lg">
+              <div className="absolute inset-0 flex flex-col">
+                <div className="bg-black h-1/3 w-full"></div>
+                <div className="bg-white h-1/3 w-full"></div>
+                <div className="bg-accent h-1/3 w-full"></div>
+              </div>
+              <div className="absolute left-0 h-full w-1/3 bg-primary"></div>
+              <div className="absolute top-0 left-0 w-1 h-32 bg-gray-800 transform -translate-x-1"></div>
+            </div>
           </div>
-          <div className="absolute left-0 h-full w-1/3 bg-primary"></div>
-          <div className="absolute top-0 left-0 w-1 h-40 bg-gray-800 transform -translate-x-1"></div>
         </div>
       </div>
       
