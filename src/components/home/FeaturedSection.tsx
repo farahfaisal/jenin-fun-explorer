@@ -31,9 +31,16 @@ const featured = [
 
 const FeaturedSection = () => {
   return (
-    <section className="py-16">
+    <section className="py-16 bg-white relative">
+      {/* إضافة شريط جانبي بألوان علم فلسطين */}
+      <div className="absolute top-0 bottom-0 left-0 w-2 flex flex-col">
+        <div className="flex-1 bg-black"></div>
+        <div className="flex-1 bg-white border-y border-gray-200"></div>
+        <div className="flex-1 bg-accent"></div>
+      </div>
+      
       <div className="container mx-auto px-6">
-        <h2 className="text-3xl font-bold text-center mb-12">الأنشطة المميزة</h2>
+        <h2 className="text-3xl font-bold text-center mb-12 text-primary">الأنشطة المميزة</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {featured.map((item) => (

@@ -9,9 +9,23 @@ const HeroSection = () => {
   return (
     <section 
       className="relative bg-cover bg-center py-32" 
-      style={{ backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url(https://images.unsplash.com/photo-1508433957232-3107f5fd5995?auto=format&fit=crop&q=80&w=1080)' }}
+      style={{ 
+        backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url(https://images.unsplash.com/photo-1508433957232-3107f5fd5995?auto=format&fit=crop&q=80&w=1080)',
+        position: 'relative',
+        zIndex: 1,
+      }}
     >
-      <div className="container mx-auto px-6 text-center">
+      {/* إضافة شريط ألوان علم فلسطين */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="w-full h-full flex flex-col">
+          <div className="bg-black h-1/3 w-full"></div>
+          <div className="bg-white h-1/3 w-full"></div>
+          <div className="bg-accent h-1/3 w-full"></div>
+          <div className="absolute left-0 h-full w-1/4 bg-primary"></div>
+        </div>
+      </div>
+      
+      <div className="container mx-auto px-6 text-center relative z-10">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 animate-fade-in">
           استكشف الأنشطة الترفيهية في جنين
         </h1>
