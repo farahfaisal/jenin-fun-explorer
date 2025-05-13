@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapPin, Hotel, MapPin as ParkIcon, Home } from 'lucide-react';
 import Layout from '@/components/Layout';
@@ -119,6 +120,7 @@ const ActivityDetail = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const bookingsTabRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     // Simulate fetching data from an API
@@ -137,6 +139,20 @@ const ActivityDetail = () => {
 
   const handleLoginRedirect = () => {
     navigate('/login');
+  };
+
+  const handleBookNowClick = () => {
+    if (bookingsTabRef.current) {
+      bookingsTabRef.current.click();
+      
+      // Scroll to the bookings section
+      setTimeout(() => {
+        const bookingsSection = document.querySelector('[data-state="active"][data-value="bookings"]');
+        if (bookingsSection) {
+          bookingsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
   };
 
   if (isLoading) {
@@ -185,6 +201,7 @@ const ActivityDetail = () => {
           icon={activity.icon}
           categoryLabel={activity.categoryLabel}
           location={activity.location}
+          onBookNowClick={handleBookNowClick}
         />
 
         {/* Owner Card - Visible to all */}
@@ -193,7 +210,7 @@ const ActivityDetail = () => {
           ownerProfile={activity.ownerProfile}
         />
 
-        {/* Tabs Section - Now visible to all users */}
+        {/* Tabs Section */}
         <ActivityDetailTabs 
           description={activity.description}
           amenities={activity.amenities}
@@ -206,6 +223,7 @@ const ActivityDetail = () => {
           activityId={activity.id}
           activityName={activity.name}
           ownerName={activity.owner}
+          bookingsTabRef={bookingsTabRef}
         />
 
         {/* Back to Activities Button */}

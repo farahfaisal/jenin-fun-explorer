@@ -7,9 +7,16 @@ interface ActivityHeaderProps {
   icon?: React.ComponentType<{ size?: number; className?: string }>;
   categoryLabel: string;
   location: string;
+  onBookNowClick?: () => void;
 }
 
-export const ActivityHeader = ({ name, icon: Icon, categoryLabel, location }: ActivityHeaderProps) => {
+export const ActivityHeader = ({ 
+  name, 
+  icon: Icon, 
+  categoryLabel, 
+  location, 
+  onBookNowClick 
+}: ActivityHeaderProps) => {
   return (
     <div className="flex items-center justify-between mt-6">
       <div>
@@ -23,7 +30,7 @@ export const ActivityHeader = ({ name, icon: Icon, categoryLabel, location }: Ac
           <span>{location}</span>
         </div>
       </div>
-      <Button variant="outline">
+      <Button variant="outline" onClick={onBookNowClick}>
         <Calendar size={16} className="ml-2" />
         <span>احجز الآن</span>
       </Button>

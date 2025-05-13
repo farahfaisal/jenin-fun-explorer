@@ -1,7 +1,7 @@
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ActivityBookingCalendar } from '@/components/activities/ActivityBookingCalendar';
+import { useRef } from 'react';
 
 interface Review {
   id: number;
@@ -23,6 +23,7 @@ interface ActivityDetailTabsProps {
   activityId: number;
   activityName: string;
   ownerName?: string;
+  bookingsTabRef?: React.RefObject<HTMLButtonElement>;
 }
 
 export const ActivityDetailTabs = ({
@@ -37,6 +38,7 @@ export const ActivityDetailTabs = ({
   activityId,
   activityName,
   ownerName,
+  bookingsTabRef,
 }: ActivityDetailTabsProps) => {
   return (
     <Tabs defaultValue="overview" className="mt-8">
@@ -44,7 +46,7 @@ export const ActivityDetailTabs = ({
         <TabsTrigger value="overview">نظرة عامة</TabsTrigger>
         <TabsTrigger value="amenities">المرافق</TabsTrigger>
         <TabsTrigger value="reviews">التقييمات</TabsTrigger>
-        <TabsTrigger value="bookings">الحجز</TabsTrigger>
+        <TabsTrigger value="bookings" ref={bookingsTabRef}>الحجز</TabsTrigger>
         <TabsTrigger value="contact">معلومات الاتصال</TabsTrigger>
         {(isOwner || isAdmin) && <TabsTrigger value="admin">إدارة النشاط</TabsTrigger>}
       </TabsList>
@@ -76,14 +78,6 @@ export const ActivityDetailTabs = ({
             <p className="mt-2">{review.comment}</p>
           </div>
         ))}
-      </TabsContent>
-      
-      <TabsContent value="bookings" className="mt-4">
-        <ActivityBookingCalendar 
-          activityId={activityId} 
-          activityName={activityName} 
-          ownerName={ownerName}
-        />
       </TabsContent>
       
       <TabsContent value="contact" className="mt-4 space-y-2">
@@ -122,6 +116,14 @@ export const ActivityDetailTabs = ({
           </div>
         </TabsContent>
       )}
+      
+      <TabsContent value="bookings" className="mt-4">
+        <ActivityBookingCalendar 
+          activityId={activityId} 
+          activityName={activityName} 
+          ownerName={ownerName}
+        />
+      </TabsContent>
     </Tabs>
   );
 };
