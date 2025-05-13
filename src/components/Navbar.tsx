@@ -22,7 +22,7 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-sm py-4 px-6">
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold text-primary">جنين للترفيه</Link>
+        <Link to="/" className="text-2xl font-bold text-primary">Xplore pal</Link>
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6 space-x-reverse">

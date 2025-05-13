@@ -7,9 +7,9 @@ const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="flex flex-wrap">
           <div className="w-full md:w-1/3 mb-8">
-            <h3 className="text-2xl font-bold mb-4">جنين للترفيه</h3>
+            <h3 className="text-2xl font-bold mb-4">Xplore pal</h3>
             <p className="text-gray-300 mb-4">
-              دليلك الشامل للأنشطة الترفيهية في مدينة جنين
+              دليلك الشامل للأنشطة الترفيهية في فلسطين
             </p>
           </div>
           
@@ -42,16 +42,16 @@ const Footer = () => {
           <div className="w-full md:w-1/3 mb-8">
             <h4 className="text-xl font-semibold mb-4">تواصل معنا</h4>
             <address className="not-italic text-gray-300">
-              <p className="mb-2">جنين، فلسطين</p>
+              <p className="mb-2">فلسطين</p>
               <p className="mb-2">هاتف: 1234 567 970+</p>
-              <p className="mb-2">البريد الإلكتروني: info@jenin-activities.ps</p>
+              <p className="mb-2">البريد الإلكتروني: info@xplore-pal.ps</p>
             </address>
           </div>
         </div>
         
         <div className="border-t border-gray-800 mt-8 pt-6 text-center">
           <p className="text-gray-400">
-            &copy; {new Date().getFullYear()} جنين للترفيه. جميع الحقوق محفوظة
+            &copy; {new Date().getFullYear()} Xplore pal. جميع الحقوق محفوظة
           </p>
         </div>
       </div>

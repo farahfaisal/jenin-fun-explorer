@@ -37,10 +37,10 @@ const HeroSection = () => {
       
       <div className="container mx-auto px-6 text-center relative z-10">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 animate-fade-in">
-          استكشف الأنشطة الترفيهية في جنين
+          استكشف الأنشطة الترفيهية في فلسطين
         </h1>
         <p className="text-xl text-white mb-8 max-w-2xl mx-auto animate-slide-up">
-          دليلك الشامل للفنادق، الشاليهات، الحدائق والأنشطة الترفيهية في مدينة جنين
+          دليلك الشامل للفنادق، الشاليهات، الحدائق والأنشطة الترفيهية في فلسطين
         </p>
         
         <div className="max-w-md mx-auto bg-white rounded-lg overflow-hidden shadow-lg animate-slide-up">
