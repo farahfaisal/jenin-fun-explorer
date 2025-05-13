@@ -7,28 +7,42 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useForm } from "react-hook-form";
-
-interface LoginFormData {
-  email: string;
-  password: string;
-}
+import { AlertCircle, Info } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>();
+  const [error, setError] = useState("");
 
-  const onSubmit = async (data: LoginFormData) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
     setIsLoading(true);
+    
     try {
-      await login(data.email, data.password);
+      await login(email, password);
       navigate("/");
     } catch (error) {
-      console.error("Login failed", error);
+      setError("فشل تسجيل الدخول. يرجى التحقق من بريدك الإلكتروني وكلمة المرور.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const setDemoAccount = (role: string) => {
+    if (role === 'admin') {
+      setEmail("admin@example.com");
+      setPassword("password123");
+    } else if (role === 'owner') {
+      setEmail("owner@example.com"); 
+      setPassword("password123");
+    } else {
+      setEmail("user@example.com");
+      setPassword("password123"); 
     }
   };
 
@@ -38,52 +52,102 @@ const Login = () => {
         <Card>
           <CardHeader className="text-center">
             <CardTitle>تسجيل الدخول</CardTitle>
-            <CardDescription>
-              قم بتسجيل الدخول للوصول إلى المزيد من المعلومات والميزات
-            </CardDescription>
+            <CardDescription>أدخل بيانات حسابك للوصول إلى الموقع</CardDescription>
           </CardHeader>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
+              {error && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>خطأ</AlertTitle>
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              
               <div className="space-y-2">
                 <Label htmlFor="email">البريد الإلكتروني</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="your@email.com" 
-                  {...register("email", { 
-                    required: "البريد الإلكتروني مطلوب", 
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "بريد إلكتروني غير صالح"
-                    }
-                  })}
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
                 />
-                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
               </div>
+              
               <div className="space-y-2">
                 <Label htmlFor="password">كلمة المرور</Label>
-                <Input 
-                  id="password" 
-                  type="password" 
-                  {...register("password", { 
-                    required: "كلمة المرور مطلوبة",
-                    minLength: {
-                      value: 6,
-                      message: "كلمة المرور يجب أن تكون على الأقل 6 أحرف"
-                    }
-                  })}
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
                 />
-                {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
+              </div>
+
+              <div className="mt-6">
+                <Alert className="bg-blue-50">
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>حسابات تجريبية</AlertTitle>
+                  <AlertDescription>
+                    <div className="space-y-3 mt-2">
+                      <div>
+                        <p className="text-sm font-semibold">حساب مدير النظام:</p>
+                        <p className="text-xs">البريد: admin@example.com</p>
+                        <p className="text-xs">كلمة المرور: password123</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-1 h-7 text-xs" 
+                          onClick={() => setDemoAccount('admin')}
+                        >
+                          استخدام هذا الحساب
+                        </Button>
+                      </div>
+                      
+                      <div>
+                        <p className="text-sm font-semibold">حساب صاحب النشاط:</p>
+                        <p className="text-xs">البريد: owner@example.com</p>
+                        <p className="text-xs">كلمة المرور: password123</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-1 h-7 text-xs" 
+                          onClick={() => setDemoAccount('owner')}
+                        >
+                          استخدام هذا الحساب
+                        </Button>
+                      </div>
+                      
+                      <div>
+                        <p className="text-sm font-semibold">حساب مستخدم عادي:</p>
+                        <p className="text-xs">البريد: user@example.com</p>
+                        <p className="text-xs">كلمة المرور: password123</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-1 h-7 text-xs" 
+                          onClick={() => setDemoAccount('user')}
+                        >
+                          استخدام هذا الحساب
+                        </Button>
+                      </div>
+                    </div>
+                  </AlertDescription>
+                </Alert>
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "جاري التحميل..." : "تسجيل الدخول"}
+                {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
               </Button>
               <div className="text-center text-sm">
                 ليس لديك حساب؟{" "}
                 <Link to="/register" className="text-primary hover:underline">
-                  إنشاء حساب
+                  إنشاء حساب جديد
                 </Link>
               </div>
             </CardFooter>
