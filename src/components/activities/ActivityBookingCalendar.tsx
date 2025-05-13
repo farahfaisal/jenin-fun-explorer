@@ -11,17 +11,35 @@ import { format } from "date-fns";
 import { CalendarCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ActivityBookingCalendarProps {
   activityId: number;
   activityName: string;
+  ownerName?: string;
 }
 
 export function ActivityBookingCalendar({ 
   activityId, 
-  activityName 
+  activityName,
+  ownerName = ""
 }: ActivityBookingCalendarProps) {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [visitorName, setVisitorName] = useState("");
+  const [visitorPhone, setVisitorPhone] = useState("");
+  const [visitorEmail, setVisitorEmail] = useState("");
+  const [bookingNotes, setBookingNotes] = useState("");
   const { toast } = useToast();
 
   // Get today's date for minimum selectable date
@@ -31,7 +49,7 @@ export function ActivityBookingCalendar({
   const maxDate = new Date();
   maxDate.setMonth(today.getMonth() + 3);
 
-  const handleBookingSubmit = () => {
+  const handleBookingClick = () => {
     if (!selectedDate) {
       toast({
         title: "لم يتم اختيار تاريخ",
@@ -40,15 +58,51 @@ export function ActivityBookingCalendar({
       });
       return;
     }
+    setIsDialogOpen(true);
+  };
+
+  const handleBookingSubmit = () => {
+    if (!visitorName || !visitorPhone) {
+      toast({
+        title: "معلومات غير مكتملة",
+        description: "الرجاء إدخال الاسم ورقم الهاتف على الأقل",
+        variant: "destructive",
+      });
+      return;
+    }
 
     // In a real app, this would send the booking to the server
+    // and notify the activity owner and admin
+    
+    // Create a booking object that would be sent to the backend
+    const bookingData = {
+      activityId,
+      activityName,
+      ownerName,
+      date: format(selectedDate!, "yyyy-MM-dd"),
+      visitorName,
+      visitorPhone,
+      visitorEmail,
+      notes: bookingNotes,
+      status: "pending",
+      createdAt: new Date().toISOString()
+    };
+
+    console.log("Booking created:", bookingData);
+
+    // Show success notification
     toast({
       title: "تم تقديم طلب الحجز بنجاح",
-      description: `تم حجز ${activityName} بتاريخ ${format(selectedDate, "yyyy/MM/dd")}`,
+      description: `تم إرسال طلب حجز ${activityName} بتاريخ ${format(selectedDate!, "yyyy/MM/dd")} إلى صاحب النشاط`,
     });
 
-    // Reset the selected date
+    // Reset the form and close dialog
     setSelectedDate(undefined);
+    setVisitorName("");
+    setVisitorPhone("");
+    setVisitorEmail("");
+    setBookingNotes("");
+    setIsDialogOpen(false);
   };
 
   return (
@@ -87,12 +141,71 @@ export function ActivityBookingCalendar({
 
         <Button 
           className="w-full"
-          onClick={handleBookingSubmit}
+          onClick={handleBookingClick}
           disabled={!selectedDate}
         >
           تأكيد الحجز
         </Button>
       </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>إكمال معلومات الحجز</DialogTitle>
+            <DialogDescription>
+              الرجاء إدخال معلوماتك لإتمام حجز {activityName} بتاريخ {selectedDate ? format(selectedDate, "yyyy/MM/dd") : ""}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">الاسم الكامل *</Label>
+              <Input
+                id="name"
+                value={visitorName}
+                onChange={(e) => setVisitorName(e.target.value)}
+                placeholder="أدخل اسمك الكامل"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="phone">رقم الهاتف *</Label>
+              <Input
+                id="phone"
+                value={visitorPhone}
+                onChange={(e) => setVisitorPhone(e.target.value)}
+                placeholder="أدخل رقم هاتفك"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">البريد الإلكتروني</Label>
+              <Input
+                id="email"
+                type="email"
+                value={visitorEmail}
+                onChange={(e) => setVisitorEmail(e.target.value)}
+                placeholder="أدخل بريدك الإلكتروني (اختياري)"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="notes">ملاحظات إضافية</Label>
+              <Textarea
+                id="notes"
+                value={bookingNotes}
+                onChange={(e) => setBookingNotes(e.target.value)}
+                placeholder="أي ملاحظات أو طلبات خاصة (اختياري)"
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              إلغاء
+            </Button>
+            <Button onClick={handleBookingSubmit}>
+              تأكيد الحجز
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

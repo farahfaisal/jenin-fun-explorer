@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapPin, Hotel, MapPin as ParkIcon, Home } from 'lucide-react';
@@ -9,7 +8,6 @@ import { Activity } from '@/types/activity';
 import { useAuth } from '@/contexts/AuthContext';
 import { ActivityImageGallery } from '@/components/activities/ActivityImageGallery';
 import { ActivityHeader } from '@/components/activities/ActivityHeader';
-import { ActivityAuthAlert } from '@/components/activities/ActivityAuthAlert';
 import { ActivityOwnerCard } from '@/components/activities/ActivityOwnerCard';
 import { ActivityDetailTabs } from '@/components/activities/ActivityDetailTabs';
 
@@ -131,9 +129,6 @@ const ActivityDetail = () => {
     }, 500);
   }, [id]);
 
-  // Check if user has access to view detailed activity info
-  const hasDetailedAccess = isAuthenticated;
-  
   // Check if user is the owner of this activity
   const isOwner = user?.role === 'owner' && user?.ownedActivities?.includes(Number(id));
   
@@ -192,32 +187,26 @@ const ActivityDetail = () => {
           location={activity.location}
         />
 
-        {/* Restricted Access Message */}
-        {!hasDetailedAccess && (
-          <ActivityAuthAlert onLoginClick={handleLoginRedirect} />
-        )}
-
         {/* Owner Card - Visible to all */}
         <ActivityOwnerCard 
           owner={activity.owner}
           ownerProfile={activity.ownerProfile}
         />
 
-        {/* Tabs Section - Only visible to authenticated users */}
-        {hasDetailedAccess && (
-          <ActivityDetailTabs 
-            description={activity.description}
-            amenities={activity.amenities}
-            reviews={activity.reviews}
-            contactPhone={activity.contactPhone}
-            contactEmail={activity.contactEmail}
-            website={activity.website}
-            isOwner={isOwner}
-            isAdmin={isAdmin}
-            activityId={activity.id}
-            activityName={activity.name}
-          />
-        )}
+        {/* Tabs Section - Now visible to all users */}
+        <ActivityDetailTabs 
+          description={activity.description}
+          amenities={activity.amenities}
+          reviews={activity.reviews}
+          contactPhone={activity.contactPhone}
+          contactEmail={activity.contactEmail}
+          website={activity.website}
+          isOwner={isOwner}
+          isAdmin={isAdmin}
+          activityId={activity.id}
+          activityName={activity.name}
+          ownerName={activity.owner}
+        />
 
         {/* Back to Activities Button */}
         <div className="mt-8">

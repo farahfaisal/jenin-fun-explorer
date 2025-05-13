@@ -22,6 +22,7 @@ interface ActivityDetailTabsProps {
   isAdmin: boolean;
   activityId: number;
   activityName: string;
+  ownerName?: string;
 }
 
 export const ActivityDetailTabs = ({
@@ -35,6 +36,7 @@ export const ActivityDetailTabs = ({
   isAdmin,
   activityId,
   activityName,
+  ownerName,
 }: ActivityDetailTabsProps) => {
   return (
     <Tabs defaultValue="overview" className="mt-8">
@@ -77,7 +79,11 @@ export const ActivityDetailTabs = ({
       </TabsContent>
       
       <TabsContent value="bookings" className="mt-4">
-        <ActivityBookingCalendar activityId={activityId} activityName={activityName} />
+        <ActivityBookingCalendar 
+          activityId={activityId} 
+          activityName={activityName} 
+          ownerName={ownerName}
+        />
       </TabsContent>
       
       <TabsContent value="contact" className="mt-4 space-y-2">
