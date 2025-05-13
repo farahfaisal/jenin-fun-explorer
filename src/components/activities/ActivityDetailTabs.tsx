@@ -1,6 +1,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { ActivityBookingCalendar } from '@/components/activities/ActivityBookingCalendar';
 
 interface Review {
   id: number;
@@ -19,6 +20,8 @@ interface ActivityDetailTabsProps {
   website: string;
   isOwner: boolean;
   isAdmin: boolean;
+  activityId: number;
+  activityName: string;
 }
 
 export const ActivityDetailTabs = ({
@@ -30,6 +33,8 @@ export const ActivityDetailTabs = ({
   website,
   isOwner,
   isAdmin,
+  activityId,
+  activityName,
 }: ActivityDetailTabsProps) => {
   return (
     <Tabs defaultValue="overview" className="mt-8">
@@ -37,6 +42,7 @@ export const ActivityDetailTabs = ({
         <TabsTrigger value="overview">نظرة عامة</TabsTrigger>
         <TabsTrigger value="amenities">المرافق</TabsTrigger>
         <TabsTrigger value="reviews">التقييمات</TabsTrigger>
+        <TabsTrigger value="bookings">الحجز</TabsTrigger>
         <TabsTrigger value="contact">معلومات الاتصال</TabsTrigger>
         {(isOwner || isAdmin) && <TabsTrigger value="admin">إدارة النشاط</TabsTrigger>}
       </TabsList>
@@ -68,6 +74,10 @@ export const ActivityDetailTabs = ({
             <p className="mt-2">{review.comment}</p>
           </div>
         ))}
+      </TabsContent>
+      
+      <TabsContent value="bookings" className="mt-4">
+        <ActivityBookingCalendar activityId={activityId} activityName={activityName} />
       </TabsContent>
       
       <TabsContent value="contact" className="mt-4 space-y-2">

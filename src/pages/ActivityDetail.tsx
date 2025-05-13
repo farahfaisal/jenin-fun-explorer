@@ -214,6 +214,8 @@ const ActivityDetail = () => {
             website={activity.website}
             isOwner={isOwner}
             isAdmin={isAdmin}
+            activityId={activity.id}
+            activityName={activity.name}
           />
         )}
 
