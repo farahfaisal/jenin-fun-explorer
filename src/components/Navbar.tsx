@@ -19,6 +19,16 @@ const Navbar = () => {
     navigate('/');
   };
 
+  const navigateToDashboard = () => {
+    if (user?.role === 'admin') {
+      navigate('/admin-dashboard');
+    } else if (user?.role === 'owner') {
+      navigate('/owner-dashboard');
+    } else {
+      navigate('/user-dashboard');
+    }
+  };
+
   return (
     <nav className="bg-white shadow-sm py-4 px-6">
       <div className="container mx-auto flex justify-between items-center">
@@ -42,15 +52,26 @@ const Navbar = () => {
                    user?.role === 'user' ? 'مستخدم' : ''}
                 </span>
               </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={handleLogout}
-                className="flex items-center gap-2"
-              >
-                <LogOut size={16} />
-                تسجيل خروج
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={navigateToDashboard}
+                  className="flex items-center gap-2"
+                >
+                  <User size={16} />
+                  لوحة التحكم
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut size={16} />
+                  تسجيل خروج
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="flex gap-2">
@@ -133,6 +154,18 @@ const Navbar = () => {
                      user?.role === 'user' ? 'مستخدم' : ''}
                   </span>
                 </div>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => {
+                    navigateToDashboard();
+                    toggleMenu();
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <User size={16} />
+                  لوحة التحكم
+                </Button>
                 <Button 
                   variant="outline" 
                   size="sm" 
