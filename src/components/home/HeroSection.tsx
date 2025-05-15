@@ -23,24 +23,6 @@ const HeroSection = () => {
         <div className="h-1/4 bg-[#027C3F] opacity-60"></div>
         <div className="h-1/4 bg-[#E60026] opacity-60"></div>
       </div>
-
-      {/* طفل يحمل علم فلسطين في الحديقة */}
-      <div className="absolute bottom-20 right-10 z-10 flex items-end animate-bounce">
-        <div className="relative">
-          <Users size={80} className="text-white" />
-          <div className="absolute -top-14 -right-4 transform -rotate-12">
-            <div className="w-16 h-24 relative shadow-lg">
-              <div className="absolute inset-0 flex flex-col">
-                <div className="bg-black h-1/3 w-full"></div>
-                <div className="bg-white h-1/3 w-full"></div>
-                <div className="bg-accent h-1/3 w-full"></div>
-              </div>
-              <div className="absolute left-0 h-full w-1/3 bg-primary"></div>
-              <div className="absolute top-0 left-0 w-1 h-32 bg-gray-800 transform -translate-x-1"></div>
-            </div>
-          </div>
-        </div>
-      </div>
       
       <div className="container mx-auto px-6 text-center relative z-10">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 animate-fade-in">
