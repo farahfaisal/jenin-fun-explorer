@@ -16,19 +16,19 @@ const HeroSection = () => {
         zIndex: 1,
       }}
     >
-      {/* Palestinian flag colors overlay */}
+      {/* Palestinian flag colors overlay with reduced opacity */}
       <div className="absolute inset-0 z-0">
-        <div className="h-1/4 bg-black opacity-60"></div>
-        <div className="h-1/4 bg-white opacity-60"></div>
-        <div className="h-1/4 bg-[#027C3F] opacity-60"></div>
-        <div className="h-1/4 bg-[#E60026] opacity-60"></div>
+        <div className="h-1/4 bg-black opacity-40"></div>
+        <div className="h-1/4 bg-white opacity-40"></div>
+        <div className="h-1/4 bg-[#027C3F] opacity-40"></div>
+        <div className="h-1/4 bg-[#E60026] opacity-40"></div>
       </div>
       
       <div className="container mx-auto px-6 text-center relative z-10">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 animate-fade-in">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-6 animate-fade-in">
           استكشف الأنشطة الترفيهية في فلسطين
         </h1>
-        <p className="text-xl text-white mb-8 max-w-2xl mx-auto animate-slide-up">
+        <p className="text-xl text-black mb-8 max-w-2xl mx-auto animate-slide-up">
           دليلك الشامل للفنادق، الشاليهات، الحدائق والأنشطة الترفيهية في فلسطين
         </p>
         
