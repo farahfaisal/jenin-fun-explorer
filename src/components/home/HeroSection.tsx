@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,11 +11,19 @@ const HeroSection = () => {
     <section 
       className="relative bg-cover bg-center py-32" 
       style={{ 
-        backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.6)), url(https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=1080)',
+        backgroundImage: 'url(https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=1080)',
         position: 'relative',
         zIndex: 1,
       }}
     >
+      {/* Palestinian flag colors overlay */}
+      <div className="absolute inset-0 z-0">
+        <div className="h-1/4 bg-black opacity-60"></div>
+        <div className="h-1/4 bg-white opacity-60"></div>
+        <div className="h-1/4 bg-[#027C3F] opacity-60"></div>
+        <div className="h-1/4 bg-[#E60026] opacity-60"></div>
+      </div>
+
       {/* طفل يحمل علم فلسطين في الحديقة */}
       <div className="absolute bottom-20 right-10 z-10 flex items-end animate-bounce">
         <div className="relative">
