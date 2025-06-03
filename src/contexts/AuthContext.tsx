@@ -1,110 +1,224 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 
-// Define user roles
+// Define user roles - matching the database enum
 export type UserRole = 'admin' | 'owner' | 'user' | 'visitor';
 
-// Define user interface
-export interface User {
-  id: number;
+// Define user interface - extending Supabase user with profile data
+export interface UserProfile {
+  id: string;
   name: string;
   email: string;
   role: UserRole;
-  ownedActivities?: number[]; // Only relevant for owners
+  phone?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 // Define auth context interface
 interface AuthContextType {
   user: User | null;
+  profile: UserProfile | null;
+  session: Session | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, role: UserRole) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 // Create the context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock users for demo purposes
-const mockUsers: User[] = [
-  { id: 1, name: 'مدير النظام', email: 'admin@example.com', role: 'admin' },
-  { id: 2, name: 'شركة الفنادق الدولية', email: 'owner@example.com', role: 'owner', ownedActivities: [1, 4] },
-  { id: 3, name: 'مستخدم عادي', email: 'user@example.com', role: 'user' },
-];
-
 export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
   // Check if user is authenticated
-  const isAuthenticated = !!user;
+  const isAuthenticated = !!user && !!session;
+
+  // Fetch user profile from the profiles table
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.error('Error fetching profile:', error);
+        return null;
+      }
+
+      return data as UserProfile;
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      return null;
+    }
+  };
+
+  // Set up auth state listener
+  useEffect(() => {
+    let mounted = true;
+
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (!mounted) return;
+
+        console.log('Auth state changed:', event, session?.user?.id);
+        
+        setSession(session);
+        setUser(session?.user ?? null);
+
+        if (session?.user) {
+          // Fetch user profile data
+          setTimeout(async () => {
+            const profileData = await fetchUserProfile(session.user.id);
+            if (mounted) {
+              setProfile(profileData);
+            }
+          }, 0);
+        } else {
+          setProfile(null);
+        }
+
+        setIsLoading(false);
+      }
+    );
+
+    // Check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        fetchUserProfile(session.user.id).then(profileData => {
+          if (mounted) {
+            setProfile(profileData);
+          }
+        });
+      }
+      
+      setIsLoading(false);
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   // Login function
   const login = async (email: string, password: string) => {
-    // In a real app, this would make an API call to authenticate
-    const foundUser = mockUsers.find(u => u.email === email);
-    
-    if (foundUser) {
-      // Password validation would happen here in a real app
-      setUser(foundUser);
-      toast({
-        title: "تم تسجيل الدخول بنجاح",
-        description: `مرحبًا ${foundUser.name}`,
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
-    } else {
-      toast({
-        title: "فشل تسجيل الدخول",
-        description: "البريد الإلكتروني أو كلمة المرور غير صحيحة",
-        variant: "destructive",
-      });
-      throw new Error('Invalid credentials');
+
+      if (error) {
+        toast({
+          title: "فشل تسجيل الدخول",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
+      }
+
+      if (data.user) {
+        toast({
+          title: "تم تسجيل الدخول بنجاح",
+          description: `مرحبًا بك`,
+        });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
     }
   };
 
   // Register function
   const register = async (name: string, email: string, password: string, role: UserRole) => {
-    // In a real app, this would make an API call to register the user
-    const existingUser = mockUsers.find(u => u.email === email);
-    
-    if (existingUser) {
-      toast({
-        title: "فشل التسجيل",
-        description: "البريد الإلكتروني مسجل مسبقًا",
-        variant: "destructive",
+    try {
+      const redirectUrl = `${window.location.origin}/`;
+      
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            name: name,
+            role: role,
+          }
+        }
       });
-      throw new Error('Email already exists');
+
+      if (error) {
+        toast({
+          title: "فشل التسجيل",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
+      }
+
+      if (data.user) {
+        toast({
+          title: "تم التسجيل بنجاح",
+          description: `مرحبًا ${name}`,
+        });
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
     }
-
-    // Create new user
-    const newUser: User = {
-      id: mockUsers.length + 1,
-      name,
-      email,
-      role,
-      ownedActivities: role === 'owner' ? [] : undefined,
-    };
-
-    // In a real app, this would be added to the database
-    mockUsers.push(newUser);
-    setUser(newUser);
-    
-    toast({
-      title: "تم التسجيل بنجاح",
-      description: `مرحبًا ${name}`,
-    });
   };
 
   // Logout function
-  const logout = () => {
-    setUser(null);
-    toast({
-      title: "تم تسجيل الخروج",
-    });
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        toast({
+          title: "خطأ في تسجيل الخروج",
+          description: error.message,
+          variant: "destructive",
+        });
+        throw error;
+      }
+
+      toast({
+        title: "تم تسجيل الخروج",
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      throw error;
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, register, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      profile, 
+      session, 
+      isAuthenticated, 
+      isLoading, 
+      login, 
+      register, 
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );
