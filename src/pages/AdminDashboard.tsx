@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -67,8 +66,10 @@ const AdminDashboard = () => {
 
   const [newUser, setNewUser] = useState({ name: '', email: '', role: 'user' });
   const [newActivity, setNewActivity] = useState({ name: '', category: '', ownerId: 2 });
+  const [newBooking, setNewBooking] = useState({ activityName: '', userName: '', date: '', status: 'قيد المراجعة' });
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [isAddActivityOpen, setIsAddActivityOpen] = useState(false);
+  const [isAddBookingOpen, setIsAddBookingOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated || user?.role !== 'admin') {
@@ -135,6 +136,29 @@ const AdminDashboard = () => {
     toast({
       title: "تم بنجاح",
       description: "تم حذف النشاط بنجاح",
+    });
+  };
+
+  const handleAddBooking = () => {
+    if (!newBooking.activityName || !newBooking.userName || !newBooking.date) {
+      toast({
+        title: "خطأ",
+        description: "يرجى ملء جميع الحقول المطلوبة",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const booking = {
+      id: bookings.length + 1,
+      ...newBooking
+    };
+    setBookings([...bookings, booking]);
+    setNewBooking({ activityName: '', userName: '', date: '', status: 'قيد المراجعة' });
+    setIsAddBookingOpen(false);
+    toast({
+      title: "تم بنجاح",
+      description: "تم إضافة الحجز بنجاح",
     });
   };
 
@@ -439,8 +463,78 @@ const AdminDashboard = () => {
                 
                 <TabsContent value="bookings">
                   <Card>
-                    <CardHeader>
+                    <CardHeader className="flex flex-row items-center justify-between">
                       <CardTitle>إدارة الحجوزات</CardTitle>
+                      <Dialog open={isAddBookingOpen} onOpenChange={setIsAddBookingOpen}>
+                        <DialogTrigger asChild>
+                          <Button size="sm">
+                            <Plus size={16} className="mr-2" />
+                            إضافة حجز جديد
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>إضافة حجز جديد</DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div>
+                              <Label htmlFor="activityName">اسم النشاط</Label>
+                              <Select value={newBooking.activityName} onValueChange={(value) => setNewBooking({...newBooking, activityName: value})}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="اختر النشاط" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {activities.map((activity) => (
+                                    <SelectItem key={activity.id} value={activity.name}>
+                                      {activity.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <Label htmlFor="userName">اسم المستخدم</Label>
+                              <Select value={newBooking.userName} onValueChange={(value) => setNewBooking({...newBooking, userName: value})}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="اختر المستخدم" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {users.filter(user => user.role === 'user').map((user) => (
+                                    <SelectItem key={user.id} value={user.name}>
+                                      {user.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div>
+                              <Label htmlFor="date">تاريخ الحجز</Label>
+                              <Input
+                                id="date"
+                                type="date"
+                                value={newBooking.date}
+                                onChange={(e) => setNewBooking({...newBooking, date: e.target.value})}
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="status">حالة الحجز</Label>
+                              <Select value={newBooking.status} onValueChange={(value) => setNewBooking({...newBooking, status: value})}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="اختر حالة الحجز" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="قيد المراجعة">قيد المراجعة</SelectItem>
+                                  <SelectItem value="مؤكد">مؤكد</SelectItem>
+                                  <SelectItem value="ملغي">ملغي</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <Button onClick={handleAddBooking} className="w-full">
+                              إضافة الحجز
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-4">
