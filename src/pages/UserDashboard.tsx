@@ -1,196 +1,242 @@
 
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Layout from '@/components/Layout';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { 
-  Sidebar, 
-  SidebarContent, 
-  SidebarHeader, 
-  SidebarMenu, 
-  SidebarMenuItem, 
-  SidebarMenuButton, 
-  SidebarProvider, 
-  SidebarFooter 
-} from '@/components/ui/sidebar';
+import Layout from '@/components/Layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Settings, Calendar, Home } from 'lucide-react';
+import { Heart, Calendar, MapPin, Star, Eye } from 'lucide-react';
+
+// Mock data
+const mockStats = {
+  totalBookings: 8,
+  upcomingBookings: 3,
+  completedBookings: 5,
+  favorites: 12
+};
+
+const mockBookings = [
+  { 
+    id: '1', 
+    activityTitle: 'رحلة جبل شمس', 
+    date: '2024-02-15', 
+    time: '08:00',
+    status: 'confirmed', 
+    price: 75,
+    location: 'جبل شمس، نزوى'
+  },
+  { 
+    id: '2', 
+    activityTitle: 'رحلة وادي شاب', 
+    date: '2024-02-18', 
+    time: '09:00',
+    status: 'pending', 
+    price: 45,
+    location: 'وادي شاب، صور'
+  },
+  { 
+    id: '3', 
+    activityTitle: 'جولة في قلعة بهلاء', 
+    date: '2024-02-20', 
+    time: '10:00',
+    status: 'confirmed', 
+    price: 25,
+    location: 'قلعة بهلاء، بهلاء'
+  }
+];
+
+const mockFavorites = [
+  { 
+    id: '1', 
+    title: 'رحلة جبل شمس', 
+    price: 75, 
+    rating: 4.8, 
+    location: 'جبل شمس، نزوى',
+    image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4'
+  },
+  { 
+    id: '2', 
+    title: 'رحلة وادي شاب', 
+    price: 45, 
+    rating: 4.6, 
+    location: 'وادي شاب، صور',
+    image: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000'
+  }
+];
 
 const UserDashboard = () => {
-  const { user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/login');
-    }
-  }, [isAuthenticated, navigate]);
-
-  if (!isAuthenticated) {
-    return null;
-  }
+  const { profile } = useAuth();
+  const [stats, setStats] = useState(mockStats);
+  const [bookings, setBookings] = useState(mockBookings);
+  const [favorites, setFavorites] = useState(mockFavorites);
 
   return (
     <Layout>
       <div className="container mx-auto py-6">
-        <h1 className="text-3xl font-bold mb-6">لوحة التحكم</h1>
-        
-        <SidebarProvider>
-          <div className="flex min-h-[calc(100vh-200px)] w-full rounded-lg border">
-            <Sidebar>
-              <SidebarHeader>
-                <div className="px-4 py-2">
-                  <h2 className="text-lg font-semibold">القائمة</h2>
-                </div>
-              </SidebarHeader>
-              <SidebarContent>
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton>
-                      <Home size={20} />
-                      <span>الرئيسية</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton>
-                      <Calendar size={20} />
-                      <span>حجوزاتي</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton>
-                      <Settings size={20} />
-                      <span>الإعدادات</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              </SidebarContent>
-              <SidebarFooter>
-                <div className="px-4 py-2 text-xs text-gray-500">
-                  المستخدم: {user?.name}
-                </div>
-              </SidebarFooter>
-            </Sidebar>
-            
-            <div className="flex-1 p-6">
-              <Tabs defaultValue="dashboard">
-                <TabsList>
-                  <TabsTrigger value="dashboard">نظرة عامة</TabsTrigger>
-                  <TabsTrigger value="bookings">حجوزاتي</TabsTrigger>
-                  <TabsTrigger value="profile">الملف الشخصي</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="dashboard" className="space-y-4 mt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>إجمالي حجوزاتي</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-3xl font-bold">3</p>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardHeader>
-                        <CardTitle>الأنشطة المفضلة</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-3xl font-bold">2</p>
-                      </CardContent>
-                    </Card>
-                  </div>
-                  
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>أنشطة مقترحة لك</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        {[
-                          { id: 2, name: 'جولة في المدينة التاريخية', category: 'ثقافي' },
-                          { id: 3, name: 'رحلة غوص في البحر الأحمر', category: 'مغامرات' },
-                          { id: 5, name: 'زيارة متحف الفن الحديث', category: 'ثقافي' }
-                        ].map((activity) => (
-                          <div key={activity.id} className="p-3 border rounded-lg flex justify-between items-center">
-                            <div>
-                              <p className="font-medium">{activity.name}</p>
-                              <p className="text-sm text-gray-500">التصنيف: {activity.category}</p>
-                            </div>
-                            <div className="flex gap-2">
-                              <button 
-                                onClick={() => navigate(`/activity/${activity.id}`)}
-                                className="text-primary text-sm hover:underline"
-                              >
-                                عرض التفاصيل
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="bookings">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>حجوزاتي</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        {[1, 2, 3].map((booking) => (
-                          <div key={booking} className="p-3 border rounded-lg">
-                            <div className="flex justify-between">
-                              <div>
-                                <p className="font-medium">حجز رقم #{booking}</p>
-                                <p className="text-sm text-gray-500">النشاط: رحلة سفاري في الصحراء</p>
-                              </div>
-                              <div>
-                                <p className="text-sm text-gray-500">تاريخ الحجز: {new Date().toLocaleDateString('ar-SA')}</p>
-                                <div className="mt-2">
-                                  <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">مؤكد</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="profile">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>معلومات الملف الشخصي</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        <div>
-                          <label className="text-sm font-medium">الاسم</label>
-                          <p>{user?.name}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium">البريد الإلكتروني</label>
-                          <p>{user?.email}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium">العضوية</label>
-                          <p>
-                            {user?.role === 'admin' ? 'مدير النظام' : 
-                             user?.role === 'owner' ? 'صاحب نشاط' : 'مستخدم عادي'}
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
-            </div>
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold">لوحة التحكم</h1>
+            <p className="text-gray-600 mt-2">مرحباً {profile?.name}</p>
           </div>
-        </SidebarProvider>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">إجمالي الحجوزات</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.totalBookings}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">الحجوزات القادمة</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.upcomingBookings}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">الرحلات المكتملة</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.completedBookings}</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">المفضلة</CardTitle>
+              <Heart className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stats.favorites}</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* User Tabs */}
+        <Tabs defaultValue="bookings" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="bookings">حجوزاتي</TabsTrigger>
+            <TabsTrigger value="favorites">المفضلة</TabsTrigger>
+            <TabsTrigger value="profile">الملف الشخصي</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="bookings" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>حجوزاتي</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {bookings.map((booking) => (
+                    <div key={booking.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex-1">
+                        <h3 className="font-semibold">{booking.activityTitle}</h3>
+                        <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
+                            {booking.date} في {booking.time}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <MapPin className="h-4 w-4" />
+                            {booking.location}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Badge variant={booking.status === 'confirmed' ? 'default' : 'secondary'}>
+                            {booking.status === 'confirmed' ? 'مؤكد' : 'في الانتظار'}
+                          </Badge>
+                          <span className="text-sm font-medium text-green-600">{booking.price} ر.ع</span>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="favorites" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>الأنشطة المفضلة</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {favorites.map((activity) => (
+                    <div key={activity.id} className="border rounded-lg overflow-hidden">
+                      <img 
+                        src={activity.image} 
+                        alt={activity.title}
+                        className="w-full h-48 object-cover"
+                      />
+                      <div className="p-4">
+                        <h3 className="font-semibold mb-2">{activity.title}</h3>
+                        <div className="flex items-center gap-1 mb-2">
+                          <MapPin className="h-4 w-4 text-gray-500" />
+                          <span className="text-sm text-gray-600">{activity.location}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1">
+                            <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                            <span className="text-sm">{activity.rating}</span>
+                          </div>
+                          <span className="font-bold text-primary">{activity.price} ر.ع</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="profile" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>الملف الشخصي</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">الاسم</label>
+                    <p className="mt-1 text-gray-900">{profile?.name}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">البريد الإلكتروني</label>
+                    <p className="mt-1 text-gray-900">{profile?.email}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">رقم الهاتف</label>
+                    <p className="mt-1 text-gray-900">{profile?.phone || 'غير محدد'}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">نوع الحساب</label>
+                    <p className="mt-1 text-gray-900">
+                      {profile?.role === 'admin' ? 'مدير' : 
+                       profile?.role === 'owner' ? 'صاحب نشاط' : 'مستخدم'}
+                    </p>
+                  </div>
+                  <Button className="mt-4">تعديل الملف الشخصي</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </Layout>
   );

@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, profile, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -20,9 +20,9 @@ const Navbar = () => {
   };
 
   const navigateToDashboard = () => {
-    if (user?.role === 'admin') {
+    if (profile?.role === 'admin') {
       navigate('/admin-dashboard');
-    } else if (user?.role === 'owner') {
+    } else if (profile?.role === 'owner') {
       navigate('/owner-dashboard');
     } else {
       navigate('/user-dashboard');
@@ -45,11 +45,11 @@ const Navbar = () => {
           {isAuthenticated ? (
             <div className="flex items-center gap-4">
               <div className="text-sm">
-                <span className="font-bold">{user?.name}</span>
+                <span className="font-bold">{profile?.name || user?.email}</span>
                 <span className="text-gray-500 text-xs block">
-                  {user?.role === 'admin' ? 'مدير النظام' : 
-                   user?.role === 'owner' ? 'صاحب نشاط' : 
-                   user?.role === 'user' ? 'مستخدم' : ''}
+                  {profile?.role === 'admin' ? 'مدير النظام' : 
+                   profile?.role === 'owner' ? 'صاحب نشاط' : 
+                   profile?.role === 'user' ? 'مستخدم' : ''}
                 </span>
               </div>
               <div className="flex gap-2">
@@ -147,11 +147,11 @@ const Navbar = () => {
             {isAuthenticated ? (
               <div className="flex flex-col gap-2 pt-2 border-t">
                 <div className="text-sm">
-                  <span className="font-bold">{user?.name}</span>
+                  <span className="font-bold">{profile?.name || user?.email}</span>
                   <span className="text-gray-500 text-xs block">
-                    {user?.role === 'admin' ? 'مدير النظام' : 
-                     user?.role === 'owner' ? 'صاحب نشاط' : 
-                     user?.role === 'user' ? 'مستخدم' : ''}
+                    {profile?.role === 'admin' ? 'مدير النظام' : 
+                     profile?.role === 'owner' ? 'صاحب نشاط' : 
+                     profile?.role === 'user' ? 'مستخدم' : ''}
                   </span>
                 </div>
                 <Button 

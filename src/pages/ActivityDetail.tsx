@@ -1,236 +1,104 @@
 
-import { useState, useEffect, useRef } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapPin, Hotel, MapPin as ParkIcon, Home } from 'lucide-react';
-import Layout from '@/components/Layout';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Activity } from '@/types/activity';
+import { useState, useEffect } from 'react';
+import { useParams, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { ActivityImageGallery } from '@/components/activities/ActivityImageGallery';
-import { ActivityHeader } from '@/components/activities/ActivityHeader';
-import { ActivityOwnerCard } from '@/components/activities/ActivityOwnerCard';
-import { ActivityDetailTabs } from '@/components/activities/ActivityDetailTabs';
+import Layout from '@/components/Layout';
+import ActivityHeader from '@/components/activities/ActivityHeader';
+import ActivityImageGallery from '@/components/activities/ActivityImageGallery';
+import ActivityDetailTabs from '@/components/activities/ActivityDetailTabs';
+import ActivityBookingCalendar from '@/components/activities/ActivityBookingCalendar';
+import ActivityOwnerCard from '@/components/activities/ActivityOwnerCard';
+import ActivityAuthAlert from '@/components/activities/ActivityAuthAlert';
+import { Activity } from '@/types/activity';
 
-// Temporary mock data
-const activityData = {
-  id: 1,
-  name: 'فندق جنين الدولي',
-  category: 'hotels',
-  categoryLabel: 'فندق',
-  icon: Hotel,
-  owner: 'شركة الفنادق الدولية',
-  ownerProfile: {
-    id: 1,
-    name: 'شركة الفنادق الدولية',
-    image: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?auto=format&fit=crop&q=80&w=300',
-    bio: 'شركة متخصصة في إدارة الفنادق الفاخرة في فلسطين منذ عام 2005. نهدف إلى تقديم تجربة إقامة استثنائية مع الحفاظ على الطابع المحلي الأصيل.',
-    phone: '+970 59 123 4567',
-    email: 'contact@palestine-hotels.com',
-    activitiesCount: 3
-  },
-  location: 'وسط المدينة، جنين',
-  description: 'فندق فاخر يقع في قلب مدينة جنين، يوفر إطلالات خلابة على المدينة والتلال المحيطة بها. يضم الفندق 120 غرفة مجهزة بأحدث وسائل الراحة، بالإضافة إلى مطعمين ومركز للياقة البدنية وقاعات للاجتماعات والمناسبات.',
-  rating: 4.8,
-  amenities: ['واي فاي مجاني', 'موقف سيارات', 'مسبح', 'مطعم', 'خدمة الغرف', 'مركز لياقة بدنية'],
-  priceRange: '$$',
-  openingHours: 'مفتوح 24 ساعة',
-  contactPhone: '+970 59 123 4567',
-  contactEmail: 'info@jenin-hotel.ps',
-  website: 'www.jenin-hotel.ps',
-  establishedYear: 2010,
-  reviews: [
-    { id: 1, user: 'أحمد محمد', date: '2023-12-15', rating: 5, comment: 'خدمة ممتازة وموقع مثالي في وسط المدينة.' },
-    { id: 2, user: 'سارة أحمد', date: '2023-11-20', rating: 4.5, comment: 'تجربة رائعة، الغرف نظيفة ومريحة.' },
-    { id: 3, user: 'محمود علي', date: '2023-10-05', rating: 4, comment: 'فندق جيد، لكن الإفطار يمكن أن يكون أفضل.' }
-  ],
+// Mock data for demonstration
+const mockActivity: Activity = {
+  id: '1',
+  title: 'رحلة جبل شمس',
+  description: 'استكشف أعلى قمة في عمان مع مرشدين محترفين وتمتع بالمناظر الخلابة والهواء النقي',
+  shortDescription: 'رحلة استكشافية لجبل شمس مع مرشدين',
+  price: 75,
+  duration: 480,
+  maxParticipants: 15,
+  location: 'جبل شمس، نزوى، عمان',
+  latitude: 23.2367,
+  longitude: 57.2633,
+  categoryId: 'cat1',
+  ownerId: 'owner1',
+  status: 'active',
+  featured: true,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
   images: [
-    'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1080',
-    'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&q=80&w=1080',
-    'https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?auto=format&fit=crop&q=80&w=1080',
-    'https://images.unsplash.com/photo-1445991842772-097fea258e7b?auto=format&fit=crop&q=80&w=1080'
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4',
+    'https://images.unsplash.com/photo-1464822759844-d150baec0494'
   ],
-  panorama: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1080'
+  amenities: ['مرشد سياحي', 'وجبة غداء', 'مياه', 'معدات السلامة'],
+  requirements: ['لياقة بدنية متوسطة', 'ملابس رياضية', 'حذاء مشي'],
+  cancellationPolicy: 'يمكن الإلغاء قبل 24 ساعة من الرحلة'
 };
-
-// Example of other activities with different categories for testing
-const otherActivities = [
-  activityData, // hotels
-  {
-    id: 2,
-    name: 'شاليه الربيع',
-    category: 'chalets',
-    categoryLabel: 'شاليه',
-    icon: Home,
-    owner: 'مجموعة شاليهات جنين',
-    location: 'شمال جنين',
-    description: 'شاليه فاخر محاط بالمناظر الطبيعية الخلابة، ويوفر أجواء هادئة بعيدة عن ضوضاء المدينة. يتكون الشاليه من طابقين مع شرفة واسعة وحديقة خاصة وبركة سباحة.',
-    rating: 4.6,
-    amenities: ['واي فاي مجاني', 'بركة سباحة خاصة', 'حديقة', 'شواية', 'تدفئة مركزية', 'موقف سيارات'],
-    priceRange: '$$$',
-    openingHours: 'متاح للحجز طوال العام',
-    contactPhone: '+970 59 765 4321',
-    contactEmail: 'booking@spring-chalet.ps',
-    website: 'www.spring-chalet.ps',
-    establishedYear: 2018,
-    reviews: [
-      { id: 1, user: 'خالد إبراهيم', date: '2024-01-10', rating: 5, comment: 'مكان رائع للاسترخاء. قضينا عطلة نهاية أسبوع مميزة.' },
-      { id: 2, user: 'ريم نادر', date: '2023-12-23', rating: 4.5, comment: 'الشاليه نظيف جداً والمنظر خلاب.' }
-    ],
-    images: [
-      'https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?auto=format&fit=crop&q=80&w=1080',
-      'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=1080',
-      'https://images.unsplash.com/photo-1510798831971-661eb04b3739?auto=format&fit=crop&q=80&w=1080'
-    ],
-    panorama: 'https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?auto=format&fit=crop&q=80&w=1080'
-  },
-  {
-    id: 3,
-    name: 'حديقة السلام',
-    category: 'parks',
-    categoryLabel: 'حديقة',
-    icon: ParkIcon,
-    owner: 'بلدية جنين',
-    location: 'شارع الحدائق، شرق جنين',
-    description: 'حديقة عامة واسعة مع مساحات خضراء شاسعة وملاعب للأطفال ومناطق مخصصة للشواء والنزهات العائلية. تضم الحديقة مسارات للمشي وركوب الدراجات، ونافورة مياه جميلة في المنتصف. مكان مثالي لقضاء يوم ممتع مع العائلة والأصدقاء في أحضان الطبيعة.',
-    rating: 4.5,
-    amenities: ['مواقف سيارات مجانية', 'ملاعب أطفال', 'مناطق شواء', 'مسارات للمشي', 'كافيتيريا', 'دورات مياه'],
-    priceRange: '$',
-    openingHours: '8:00 صباحًا - 9:00 مساءً، يومياً',
-    contactPhone: '+970 59 111 2222',
-    contactEmail: 'parks@jenin-municipality.ps',
-    website: 'www.jenin-parks.ps',
-    establishedYear: 2005,
-    reviews: [
-      { id: 1, user: 'فاطمة عمر', date: '2024-02-05', rating: 5, comment: 'مكان رائع للعائلات، قضينا وقتاً ممتعاً مع الأطفال.' },
-      { id: 2, user: 'سامي حسن', date: '2023-11-18', rating: 4, comment: 'حديقة جميلة ونظيفة، لكن يمكن تحسين المرافق.' }
-    ],
-    images: [
-      'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&q=80&w=1080',
-      'https://images.unsplash.com/photo-1563911302283-d2bc129e7570?auto=format&fit=crop&q=80&w=1080',
-      'https://images.unsplash.com/photo-1552617542-b5f500372f34?auto=format&fit=crop&q=80&w=1080'
-    ],
-    panorama: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&q=80&w=1080'
-  }
-];
 
 const ActivityDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const { user, profile, isAuthenticated } = useAuth();
   const [activity, setActivity] = useState<Activity | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const { user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-  const bookingsTabRef = useRef<HTMLButtonElement>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate fetching data from an API
+    // Simulate loading
     setTimeout(() => {
-      const foundActivity = otherActivities.find((item) => item.id === Number(id));
-      setActivity(foundActivity as Activity);
-      setIsLoading(false);
-    }, 500);
+      setActivity(mockActivity);
+      setLoading(false);
+    }, 1000);
   }, [id]);
 
-  // Check if user is the owner of this activity
-  const isOwner = user?.role === 'owner' && user?.ownedActivities?.includes(Number(id));
-  
-  // Check if user is an admin
-  const isAdmin = user?.role === 'admin';
-
-  const handleLoginRedirect = () => {
-    navigate('/login');
-  };
-
-  const handleBookNowClick = () => {
-    if (bookingsTabRef.current) {
-      bookingsTabRef.current.click();
-      
-      // Scroll to the bookings section
-      setTimeout(() => {
-        const bookingsSection = document.querySelector('[data-state="active"][data-value="bookings"]');
-        if (bookingsSection) {
-          bookingsSection.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    }
-  };
-
-  if (isLoading) {
+  if (loading) {
     return (
       <Layout>
-        <div className="container mx-auto px-6 py-12">
-          <Skeleton className="w-full h-64 rounded-md mb-4" />
-          <div className="flex items-center justify-between mb-4">
-            <Skeleton className="h-8 w-48 rounded-md" />
-            <Skeleton className="h-8 w-32 rounded-md" />
+        <div className="container mx-auto py-8">
+          <div className="animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
+            <div className="h-64 bg-gray-200 rounded mb-6"></div>
+            <div className="space-y-3">
+              <div className="h-4 bg-gray-200 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+            </div>
           </div>
-          <Skeleton className="h-6 w-full rounded-md mb-2" />
-          <Skeleton className="h-6 w-full rounded-md mb-2" />
-          <Skeleton className="h-6 w-full rounded-md mb-2" />
         </div>
       </Layout>
     );
   }
 
   if (!activity) {
-    return (
-      <Layout>
-        <div className="container mx-auto px-6 py-12 text-center">
-          <p className="text-xl text-gray-600">النشاط غير موجود</p>
-          <Link to="/activities" className="text-primary hover:underline">
-            العودة إلى قائمة الأنشطة
-          </Link>
-        </div>
-      </Layout>
-    );
+    return <Navigate to="/activities" replace />;
   }
 
   return (
     <Layout>
-      <div className="container mx-auto px-6 py-12">
-        {/* Hero Section with Image Gallery */}
-        <ActivityImageGallery 
-          images={activity.images} 
-          name={activity.name} 
-          rating={activity.rating}
-        />
-
-        {/* Activity Header Information */}
-        <ActivityHeader 
-          name={activity.name}
-          icon={activity.icon}
-          categoryLabel={activity.categoryLabel}
-          location={activity.location}
-          onBookNowClick={handleBookNowClick}
-        />
-
-        {/* Owner Card - Visible to all */}
-        <ActivityOwnerCard 
-          owner={activity.owner}
-          ownerProfile={activity.ownerProfile}
-        />
-
-        {/* Tabs Section */}
-        <ActivityDetailTabs 
-          description={activity.description}
-          amenities={activity.amenities}
-          reviews={activity.reviews}
-          contactPhone={activity.contactPhone}
-          contactEmail={activity.contactEmail}
-          website={activity.website}
-          isOwner={isOwner}
-          isAdmin={isAdmin}
-          activityId={activity.id}
-          activityName={activity.name}
-          ownerName={activity.owner}
-          bookingsTabRef={bookingsTabRef}
-        />
-
-        {/* Back to Activities Button */}
-        <div className="mt-8">
-          <Link to="/activities">
-            <Button variant="secondary">العودة إلى قائمة الأنشطة</Button>
-          </Link>
+      <div className="container mx-auto py-6">
+        <ActivityHeader activity={activity} />
+        
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+          <div className="lg:col-span-2">
+            <ActivityImageGallery images={activity.images} title={activity.title} />
+            <ActivityDetailTabs activity={activity} />
+          </div>
+          
+          <div className="space-y-6">
+            <ActivityOwnerCard activity={activity} />
+            
+            {!isAuthenticated && <ActivityAuthAlert />}
+            
+            {isAuthenticated && (
+              <ActivityBookingCalendar 
+                activity={activity}
+                onBookingComplete={(booking) => {
+                  console.log('Booking created:', booking);
+                }}
+              />
+            )}
+          </div>
         </div>
       </div>
     </Layout>
