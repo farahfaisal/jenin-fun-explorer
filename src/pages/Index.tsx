@@ -1,6 +1,6 @@
 
 import Layout from '@/components/Layout';
-import HeroSection from '@/components/home/HeroSection';
+import HeroSlider from '@/components/home/HeroSlider';
 import CategorySection from '@/components/home/CategorySection';
 import FeaturedSection from '@/components/home/FeaturedSection';
 import CTASection from '@/components/home/CTASection';
@@ -8,7 +8,7 @@ import CTASection from '@/components/home/CTASection';
 const Index = () => {
   return (
     <Layout>
-      <HeroSection />
+      <HeroSlider />
       <CategorySection />
       <FeaturedSection />
       <CTASection />

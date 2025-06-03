@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Layout from '@/components/Layout';
@@ -6,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Activity, Calendar, TrendingUp, Eye, Edit, Trash2 } from 'lucide-react';
+import { Users, Activity, Calendar, TrendingUp, Eye, Edit, Trash2, Sliders } from 'lucide-react';
+import SlidesManager from '@/components/admin/SlidesManager';
 
 // Mock data
 const mockStats = {
@@ -101,11 +101,16 @@ const AdminDashboard = () => {
         </div>
 
         {/* Management Tabs */}
-        <Tabs defaultValue="users" className="space-y-4">
+        <Tabs defaultValue="slides" className="space-y-4">
           <TabsList>
+            <TabsTrigger value="slides">إدارة الشرائح</TabsTrigger>
             <TabsTrigger value="users">إدارة المستخدمين</TabsTrigger>
             <TabsTrigger value="activities">إدارة الأنشطة</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="slides" className="space-y-4">
+            <SlidesManager />
+          </TabsContent>
 
           <TabsContent value="users" className="space-y-4">
             <Card>
