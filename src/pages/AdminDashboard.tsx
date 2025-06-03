@@ -184,14 +184,12 @@ const AdminDashboard = () => {
       <div className="container mx-auto py-6">
         <h1 className="text-3xl font-bold mb-6">لوحة تحكم مدير النظام</h1>
         
-        <SidebarProvider defaultOpen={true}>
+        <SidebarProvider>
           <div className="flex min-h-[calc(100vh-200px)] w-full rounded-lg border">
-            <Sidebar collapsible="icon" className="border-r">
-              <SidebarHeader className="border-b">
+            <Sidebar>
+              <SidebarHeader>
                 <div className="px-4 py-2">
-                  <h2 className="text-lg font-semibold group-data-[collapsible=icon]:opacity-0 transition-opacity">
-                    القائمة
-                  </h2>
+                  <h2 className="text-lg font-semibold">القائمة</h2>
                 </div>
               </SidebarHeader>
               <SidebarContent>
@@ -200,7 +198,6 @@ const AdminDashboard = () => {
                     <SidebarMenuButton 
                       onClick={() => setActiveTab('dashboard')}
                       isActive={activeTab === 'dashboard'}
-                      tooltip="الرئيسية"
                     >
                       <Home size={20} />
                       <span>الرئيسية</span>
@@ -210,7 +207,6 @@ const AdminDashboard = () => {
                     <SidebarMenuButton 
                       onClick={() => setActiveTab('users')}
                       isActive={activeTab === 'users'}
-                      tooltip="إدارة المستخدمين"
                     >
                       <Users size={20} />
                       <span>إدارة المستخدمين</span>
@@ -220,7 +216,6 @@ const AdminDashboard = () => {
                     <SidebarMenuButton 
                       onClick={() => setActiveTab('activities')}
                       isActive={activeTab === 'activities'}
-                      tooltip="الأنشطة"
                     >
                       <Calendar size={20} />
                       <span>الأنشطة</span>
@@ -230,36 +225,32 @@ const AdminDashboard = () => {
                     <SidebarMenuButton 
                       onClick={() => setActiveTab('bookings')}
                       isActive={activeTab === 'bookings'}
-                      tooltip="الحجوزات"
                     >
                       <Calendar size={20} />
                       <span>الحجوزات</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton 
-                      onClick={() => console.log('Settings clicked')}
-                      tooltip="الإعدادات"
-                    >
+                    <SidebarMenuButton onClick={() => console.log('Settings clicked')}>
                       <Settings size={20} />
                       <span>الإعدادات</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarContent>
-              <SidebarFooter className="border-t">
-                <div className="px-4 py-2 text-xs text-gray-500 group-data-[collapsible=icon]:opacity-0 transition-opacity">
+              <SidebarFooter>
+                <div className="px-4 py-2 text-xs text-gray-500">
                   مدير النظام: {user?.name}
                 </div>
               </SidebarFooter>
             </Sidebar>
             
-            <SidebarInset className="flex-1">
-              <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background">
+            <SidebarInset>
+              <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
                 <SidebarTrigger className="-ml-1" />
                 <h2 className="text-lg font-semibold">لوحة التحكم</h2>
               </header>
-              <div className="flex-1 p-6 overflow-auto">
+              <div className="flex-1 p-6">
                 <Tabs value={activeTab} onValueChange={setActiveTab}>
                   <TabsList>
                     <TabsTrigger value="dashboard">نظرة عامة</TabsTrigger>
@@ -577,7 +568,7 @@ const AdminDashboard = () => {
                         <div className="space-y-4">
                           {bookings.map((booking) => (
                             <div key={booking.id} className="p-3 border rounded-lg">
-                              <div className="flex justify-between items-center">
+                              <div className="flex justify-between">
                                 <div>
                                   <p className="font-medium">حجز رقم #{booking.id}</p>
                                   <p className="text-sm text-gray-500">النشاط: {booking.activityName}</p>
@@ -603,19 +594,18 @@ const AdminDashboard = () => {
                                     <AlertDialogContent>
                                       <AlertDialogHeader>
                                         <AlertDialogTitle>هل أنت متأكد؟</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                          سيتم حذف الحجز نهائياً ولا يمكن التراجع عن هذا الإجراء.
-                                        </AlertDialogDescription>
-                                      </AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                        <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => handleDeleteBooking(booking.id)}>
-                                          حذف
-                                        </AlertDialogAction>
-                                      </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                  </AlertDialog>
-                                </div>
+                                      <AlertDialogDescription>
+                                        سيتم حذف الحجز نهائياً ولا يمكن التراجع عن هذا الإجراء.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => handleDeleteBooking(booking.id)}>
+                                        حذف
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
                               </div>
                             </div>
                           ))}

@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { AlertCircle, Info, HelpCircle } from "lucide-react";
+import { AlertCircle, Info } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const Login = () => {
@@ -52,17 +51,7 @@ const Login = () => {
       <div className="container mx-auto py-10 max-w-md">
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="flex items-center justify-center gap-2">
-              تسجيل الدخول
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <HelpCircle className="h-4 w-4 text-muted-foreground cursor-help" />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>استخدم الحسابات التجريبية أدناه للوصول السريع</p>
-                </TooltipContent>
-              </Tooltip>
-            </CardTitle>
+            <CardTitle>تسجيل الدخول</CardTitle>
             <CardDescription>أدخل بيانات حسابك للوصول إلى الموقع</CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
@@ -76,17 +65,7 @@ const Login = () => {
               )}
               
               <div className="space-y-2">
-                <Label htmlFor="email" className="flex items-center gap-2">
-                  البريد الإلكتروني
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>أدخل عنوان بريدك الإلكتروني المسجل</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
+                <Label htmlFor="email">البريد الإلكتروني</Label>
                 <Input
                   id="email"
                   type="email"
@@ -98,17 +77,7 @@ const Login = () => {
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password" className="flex items-center gap-2">
-                  كلمة المرور
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <HelpCircle className="h-3 w-3 text-muted-foreground cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>أدخل كلمة المرور الخاصة بحسابك</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </Label>
+                <Label htmlFor="password">كلمة المرور</Label>
                 <Input
                   id="password"
                   type="password"
@@ -120,75 +89,51 @@ const Login = () => {
               </div>
 
               <div className="mt-6">
-                <Alert className="bg-blue-50 border-blue-200">
-                  <Info className="h-4 w-4 text-blue-600" />
-                  <AlertTitle className="text-blue-800">حسابات تجريبية</AlertTitle>
+                <Alert className="bg-blue-50">
+                  <Info className="h-4 w-4" />
+                  <AlertTitle>حسابات تجريبية</AlertTitle>
                   <AlertDescription>
                     <div className="space-y-3 mt-2">
                       <div>
-                        <p className="text-sm font-semibold text-blue-800">حساب مدير النظام:</p>
-                        <p className="text-xs text-blue-700">البريد: admin@example.com</p>
-                        <p className="text-xs text-blue-700">كلمة المرور: password123</p>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button 
-                              type="button"
-                              variant="outline" 
-                              size="sm" 
-                              className="mt-1 h-7 text-xs border-blue-300 text-blue-700 hover:bg-blue-50" 
-                              onClick={() => setDemoAccount('admin')}
-                            >
-                              استخدام هذا الحساب
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>انقر لملء بيانات حساب المدير تلقائياً</p>
-                          </TooltipContent>
-                        </Tooltip>
+                        <p className="text-sm font-semibold">حساب مدير النظام:</p>
+                        <p className="text-xs">البريد: admin@example.com</p>
+                        <p className="text-xs">كلمة المرور: password123</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-1 h-7 text-xs" 
+                          onClick={() => setDemoAccount('admin')}
+                        >
+                          استخدام هذا الحساب
+                        </Button>
                       </div>
                       
                       <div>
-                        <p className="text-sm font-semibold text-blue-800">حساب صاحب النشاط:</p>
-                        <p className="text-xs text-blue-700">البريد: owner@example.com</p>
-                        <p className="text-xs text-blue-700">كلمة المرور: password123</p>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button 
-                              type="button"
-                              variant="outline" 
-                              size="sm" 
-                              className="mt-1 h-7 text-xs border-blue-300 text-blue-700 hover:bg-blue-50" 
-                              onClick={() => setDemoAccount('owner')}
-                            >
-                              استخدام هذا الحساب
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>انقر لملء بيانات حساب صاحب النشاط تلقائياً</p>
-                          </TooltipContent>
-                        </Tooltip>
+                        <p className="text-sm font-semibold">حساب صاحب النشاط:</p>
+                        <p className="text-xs">البريد: owner@example.com</p>
+                        <p className="text-xs">كلمة المرور: password123</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-1 h-7 text-xs" 
+                          onClick={() => setDemoAccount('owner')}
+                        >
+                          استخدام هذا الحساب
+                        </Button>
                       </div>
                       
                       <div>
-                        <p className="text-sm font-semibold text-blue-800">حساب مستخدم عادي:</p>
-                        <p className="text-xs text-blue-700">البريد: user@example.com</p>
-                        <p className="text-xs text-blue-700">كلمة المرور: password123</p>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button 
-                              type="button"
-                              variant="outline" 
-                              size="sm" 
-                              className="mt-1 h-7 text-xs border-blue-300 text-blue-700 hover:bg-blue-50" 
-                              onClick={() => setDemoAccount('user')}
-                            >
-                              استخدام هذا الحساب
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>انقر لملء بيانات حساب المستخدم تلقائياً</p>
-                          </TooltipContent>
-                        </Tooltip>
+                        <p className="text-sm font-semibold">حساب مستخدم عادي:</p>
+                        <p className="text-xs">البريد: user@example.com</p>
+                        <p className="text-xs">كلمة المرور: password123</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-1 h-7 text-xs" 
+                          onClick={() => setDemoAccount('user')}
+                        >
+                          استخدام هذا الحساب
+                        </Button>
                       </div>
                     </div>
                   </AlertDescription>
@@ -196,16 +141,9 @@ const Login = () => {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>انقر لتسجيل الدخول إلى حسابك</p>
-                </TooltipContent>
-              </Tooltip>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+              </Button>
               <div className="text-center text-sm">
                 ليس لديك حساب؟{" "}
                 <Link to="/register" className="text-primary hover:underline">
