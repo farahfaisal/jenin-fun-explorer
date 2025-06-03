@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, LogIn, LogOut, User } from 'lucide-react';
+import { Menu, X, LogIn, LogOut, User, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -91,6 +91,15 @@ const Navbar = () => {
               >
                 <User size={16} />
                 إنشاء حساب
+              </Button>
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                onClick={() => navigate('/admin-register')}
+                className="flex items-center gap-2"
+              >
+                <Settings size={16} />
+                حساب مدير
               </Button>
             </div>
           )}
@@ -203,6 +212,18 @@ const Navbar = () => {
                 >
                   <User size={16} />
                   إنشاء حساب
+                </Button>
+                <Button 
+                  variant="secondary" 
+                  size="sm" 
+                  onClick={() => {
+                    navigate('/admin-register');
+                    toggleMenu();
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <Settings size={16} />
+                  حساب مدير
                 </Button>
               </div>
             )}
