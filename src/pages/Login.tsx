@@ -89,19 +89,20 @@ const Login = () => {
               </div>
 
               <div className="mt-6">
-                <Alert className="bg-blue-50">
-                  <Info className="h-4 w-4" />
-                  <AlertTitle>حسابات تجريبية</AlertTitle>
+                <Alert className="bg-blue-50 border-blue-200">
+                  <Info className="h-4 w-4 text-blue-600" />
+                  <AlertTitle className="text-blue-800">حسابات تجريبية</AlertTitle>
                   <AlertDescription>
                     <div className="space-y-3 mt-2">
                       <div>
-                        <p className="text-sm font-semibold">حساب مدير النظام:</p>
-                        <p className="text-xs">البريد: admin@example.com</p>
-                        <p className="text-xs">كلمة المرور: password123</p>
+                        <p className="text-sm font-semibold text-blue-800">حساب مدير النظام:</p>
+                        <p className="text-xs text-blue-700">البريد: admin@example.com</p>
+                        <p className="text-xs text-blue-700">كلمة المرور: password123</p>
                         <Button 
+                          type="button"
                           variant="outline" 
                           size="sm" 
-                          className="mt-1 h-7 text-xs" 
+                          className="mt-1 h-7 text-xs border-blue-300 text-blue-700 hover:bg-blue-50" 
                           onClick={() => setDemoAccount('admin')}
                         >
                           استخدام هذا الحساب
@@ -109,13 +110,14 @@ const Login = () => {
                       </div>
                       
                       <div>
-                        <p className="text-sm font-semibold">حساب صاحب النشاط:</p>
-                        <p className="text-xs">البريد: owner@example.com</p>
-                        <p className="text-xs">كلمة المرور: password123</p>
+                        <p className="text-sm font-semibold text-blue-800">حساب صاحب النشاط:</p>
+                        <p className="text-xs text-blue-700">البريد: owner@example.com</p>
+                        <p className="text-xs text-blue-700">كلمة المرور: password123</p>
                         <Button 
+                          type="button"
                           variant="outline" 
                           size="sm" 
-                          className="mt-1 h-7 text-xs" 
+                          className="mt-1 h-7 text-xs border-blue-300 text-blue-700 hover:bg-blue-50" 
                           onClick={() => setDemoAccount('owner')}
                         >
                           استخدام هذا الحساب
@@ -123,13 +125,14 @@ const Login = () => {
                       </div>
                       
                       <div>
-                        <p className="text-sm font-semibold">حساب مستخدم عادي:</p>
-                        <p className="text-xs">البريد: user@example.com</p>
-                        <p className="text-xs">كلمة المرور: password123</p>
+                        <p className="text-sm font-semibold text-blue-800">حساب مستخدم عادي:</p>
+                        <p className="text-xs text-blue-700">البريد: user@example.com</p>
+                        <p className="text-xs text-blue-700">كلمة المرور: password123</p>
                         <Button 
+                          type="button"
                           variant="outline" 
                           size="sm" 
-                          className="mt-1 h-7 text-xs" 
+                          className="mt-1 h-7 text-xs border-blue-300 text-blue-700 hover:bg-blue-50" 
                           onClick={() => setDemoAccount('user')}
                         >
                           استخدام هذا الحساب

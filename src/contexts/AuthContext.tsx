@@ -1,6 +1,5 @@
-
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 // Define user roles
 export type UserRole = 'admin' | 'owner' | 'user' | 'visitor';
