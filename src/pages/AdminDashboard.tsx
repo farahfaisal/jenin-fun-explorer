@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -185,12 +184,14 @@ const AdminDashboard = () => {
       <div className="container mx-auto py-6">
         <h1 className="text-3xl font-bold mb-6">لوحة تحكم مدير النظام</h1>
         
-        <SidebarProvider>
+        <SidebarProvider defaultOpen={true}>
           <div className="flex min-h-[calc(100vh-200px)] w-full rounded-lg border">
-            <Sidebar>
-              <SidebarHeader>
+            <Sidebar collapsible="icon" className="border-r">
+              <SidebarHeader className="border-b">
                 <div className="px-4 py-2">
-                  <h2 className="text-lg font-semibold">القائمة</h2>
+                  <h2 className="text-lg font-semibold group-data-[collapsible=icon]:opacity-0 transition-opacity">
+                    القائمة
+                  </h2>
                 </div>
               </SidebarHeader>
               <SidebarContent>
@@ -199,6 +200,7 @@ const AdminDashboard = () => {
                     <SidebarMenuButton 
                       onClick={() => setActiveTab('dashboard')}
                       isActive={activeTab === 'dashboard'}
+                      tooltip="الرئيسية"
                     >
                       <Home size={20} />
                       <span>الرئيسية</span>
@@ -208,6 +210,7 @@ const AdminDashboard = () => {
                     <SidebarMenuButton 
                       onClick={() => setActiveTab('users')}
                       isActive={activeTab === 'users'}
+                      tooltip="إدارة المستخدمين"
                     >
                       <Users size={20} />
                       <span>إدارة المستخدمين</span>
@@ -217,6 +220,7 @@ const AdminDashboard = () => {
                     <SidebarMenuButton 
                       onClick={() => setActiveTab('activities')}
                       isActive={activeTab === 'activities'}
+                      tooltip="الأنشطة"
                     >
                       <Calendar size={20} />
                       <span>الأنشطة</span>
@@ -226,32 +230,36 @@ const AdminDashboard = () => {
                     <SidebarMenuButton 
                       onClick={() => setActiveTab('bookings')}
                       isActive={activeTab === 'bookings'}
+                      tooltip="الحجوزات"
                     >
                       <Calendar size={20} />
                       <span>الحجوزات</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton onClick={() => console.log('Settings clicked')}>
+                    <SidebarMenuButton 
+                      onClick={() => console.log('Settings clicked')}
+                      tooltip="الإعدادات"
+                    >
                       <Settings size={20} />
                       <span>الإعدادات</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </SidebarMenu>
               </SidebarContent>
-              <SidebarFooter>
-                <div className="px-4 py-2 text-xs text-gray-500">
+              <SidebarFooter className="border-t">
+                <div className="px-4 py-2 text-xs text-gray-500 group-data-[collapsible=icon]:opacity-0 transition-opacity">
                   مدير النظام: {user?.name}
                 </div>
               </SidebarFooter>
             </Sidebar>
             
-            <SidebarInset>
-              <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+            <SidebarInset className="flex-1">
+              <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background">
                 <SidebarTrigger className="-ml-1" />
                 <h2 className="text-lg font-semibold">لوحة التحكم</h2>
               </header>
-              <div className="flex-1 p-6">
+              <div className="flex-1 p-6 overflow-auto">
                 <Tabs value={activeTab} onValueChange={setActiveTab}>
                   <TabsList>
                     <TabsTrigger value="dashboard">نظرة عامة</TabsTrigger>
