@@ -79,13 +79,13 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
         setUser(session?.user ?? null);
 
         if (session?.user) {
-          // Fetch user profile data
+          // Fetch user profile data with a small delay to ensure the trigger has completed
           setTimeout(async () => {
             const profileData = await fetchUserProfile(session.user.id);
             if (mounted) {
               setProfile(profileData);
             }
-          }, 0);
+          }, 100);
         } else {
           setProfile(null);
         }
@@ -165,9 +165,20 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
       });
 
       if (error) {
+        let errorMessage = error.message;
+        
+        // Provide more user-friendly error messages
+        if (error.message.includes('User already registered')) {
+          errorMessage = 'هذا البريد الإلكتروني مسجل بالفعل. يرجى استخدام بريد إلكتروني آخر أو تسجيل الدخول.';
+        } else if (error.message.includes('Invalid email')) {
+          errorMessage = 'البريد الإلكتروني غير صالح. يرجى التحقق من البريد الإلكتروني والمحاولة مرة أخرى.';
+        } else if (error.message.includes('Password')) {
+          errorMessage = 'كلمة المرور ضعيفة. يجب أن تكون كلمة المرور على الأقل 6 أحرف.';
+        }
+        
         toast({
           title: "فشل التسجيل",
-          description: error.message,
+          description: errorMessage,
           variant: "destructive",
         });
         throw error;
@@ -176,7 +187,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
       if (data.user) {
         toast({
           title: "تم التسجيل بنجاح",
-          description: `مرحبًا ${name}`,
+          description: `مرحبًا ${name}! تم إنشاء حسابك بنجاح.`,
         });
       }
     } catch (error) {
