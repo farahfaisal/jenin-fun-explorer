@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -92,11 +93,11 @@ const AdminDashboard = () => {
       return;
     }
 
-    const user = {
+    const newUserData = {
       id: users.length + 1,
       ...newUser
     };
-    setUsers([...users, user]);
+    setUsers([...users, newUserData]);
     setNewUser({ name: '', email: '', role: 'user' });
     setIsAddUserOpen(false);
     toast({
@@ -594,18 +595,19 @@ const AdminDashboard = () => {
                                     <AlertDialogContent>
                                       <AlertDialogHeader>
                                         <AlertDialogTitle>هل أنت متأكد؟</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        سيتم حذف الحجز نهائياً ولا يمكن التراجع عن هذا الإجراء.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => handleDeleteBooking(booking.id)}>
-                                        حذف
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
+                                        <AlertDialogDescription>
+                                          سيتم حذف الحجز نهائياً ولا يمكن التراجع عن هذا الإجراء.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDeleteBooking(booking.id)}>
+                                          حذف
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
                               </div>
                             </div>
                           ))}
