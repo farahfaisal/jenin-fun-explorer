@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
@@ -568,7 +569,7 @@ const AdminDashboard = () => {
                         <div className="space-y-4">
                           {bookings.map((booking) => (
                             <div key={booking.id} className="p-3 border rounded-lg">
-                              <div className="flex justify-between">
+                              <div className="flex justify-between items-center">
                                 <div>
                                   <p className="font-medium">حجز رقم #{booking.id}</p>
                                   <p className="text-sm text-gray-500">النشاط: {booking.activityName}</p>
@@ -594,18 +595,19 @@ const AdminDashboard = () => {
                                     <AlertDialogContent>
                                       <AlertDialogHeader>
                                         <AlertDialogTitle>هل أنت متأكد؟</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        سيتم حذف الحجز نهائياً ولا يمكن التراجع عن هذا الإجراء.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => handleDeleteBooking(booking.id)}>
-                                        حذف
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
+                                        <AlertDialogDescription>
+                                          سيتم حذف الحجز نهائياً ولا يمكن التراجع عن هذا الإجراء.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDeleteBooking(booking.id)}>
+                                          حذف
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
                               </div>
                             </div>
                           ))}
