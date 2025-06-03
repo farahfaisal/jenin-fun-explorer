@@ -44,6 +44,9 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // State for active tab
+  const [activeTab, setActiveTab] = useState('dashboard');
+
   const [users, setUsers] = useState([
     { id: 1, name: 'مدير النظام', email: 'admin@example.com', role: 'admin' },
     { id: 2, name: 'شركة الفنادق الدولية', email: 'owner@example.com', role: 'owner' },
@@ -190,25 +193,43 @@ const AdminDashboard = () => {
               <SidebarContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton>
+                    <SidebarMenuButton 
+                      onClick={() => setActiveTab('dashboard')}
+                      isActive={activeTab === 'dashboard'}
+                    >
                       <Home size={20} />
                       <span>الرئيسية</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton>
+                    <SidebarMenuButton 
+                      onClick={() => setActiveTab('users')}
+                      isActive={activeTab === 'users'}
+                    >
                       <Users size={20} />
                       <span>إدارة المستخدمين</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton>
+                    <SidebarMenuButton 
+                      onClick={() => setActiveTab('activities')}
+                      isActive={activeTab === 'activities'}
+                    >
+                      <Calendar size={20} />
+                      <span>الأنشطة</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton 
+                      onClick={() => setActiveTab('bookings')}
+                      isActive={activeTab === 'bookings'}
+                    >
                       <Calendar size={20} />
                       <span>الحجوزات</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton>
+                    <SidebarMenuButton onClick={() => console.log('Settings clicked')}>
                       <Settings size={20} />
                       <span>الإعدادات</span>
                     </SidebarMenuButton>
@@ -223,7 +244,7 @@ const AdminDashboard = () => {
             </Sidebar>
             
             <div className="flex-1 p-6">
-              <Tabs defaultValue="dashboard">
+              <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList>
                   <TabsTrigger value="dashboard">نظرة عامة</TabsTrigger>
                   <TabsTrigger value="users">المستخدمين</TabsTrigger>
