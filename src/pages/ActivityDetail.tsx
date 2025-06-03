@@ -3,13 +3,14 @@ import { useState, useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Layout from '@/components/Layout';
-import ActivityHeader from '@/components/activities/ActivityHeader';
-import ActivityImageGallery from '@/components/activities/ActivityImageGallery';
-import ActivityDetailTabs from '@/components/activities/ActivityDetailTabs';
-import ActivityBookingCalendar from '@/components/activities/ActivityBookingCalendar';
-import ActivityOwnerCard from '@/components/activities/ActivityOwnerCard';
-import ActivityAuthAlert from '@/components/activities/ActivityAuthAlert';
+import { ActivityHeader } from '@/components/activities/ActivityHeader';
+import { ActivityImageGallery } from '@/components/activities/ActivityImageGallery';
+import { ActivityDetailTabs } from '@/components/activities/ActivityDetailTabs';
+import { ActivityBookingCalendar } from '@/components/activities/ActivityBookingCalendar';
+import { ActivityOwnerCard } from '@/components/activities/ActivityOwnerCard';
+import { ActivityAuthAlert } from '@/components/activities/ActivityAuthAlert';
 import { Activity } from '@/types/activity';
+import { useNavigate } from 'react-router-dom';
 
 // Mock data for demonstration
 const mockActivity: Activity = {
@@ -35,7 +36,32 @@ const mockActivity: Activity = {
   ],
   amenities: ['مرشد سياحي', 'وجبة غداء', 'مياه', 'معدات السلامة'],
   requirements: ['لياقة بدنية متوسطة', 'ملابس رياضية', 'حذاء مشي'],
-  cancellationPolicy: 'يمكن الإلغاء قبل 24 ساعة من الرحلة'
+  cancellationPolicy: 'يمكن الإلغاء قبل 24 ساعة من الرحلة',
+  // Legacy properties for compatibility
+  name: 'رحلة جبل شمس',
+  category: 'adventure',
+  categoryLabel: 'مغامرات',
+  owner: 'محمد الشامسي',
+  rating: 4.8,
+  contactPhone: '+968 9999 9999',
+  contactEmail: 'info@jabalshams.com',
+  website: 'https://jabalshams.com',
+  establishedYear: 2020,
+  reviews: [
+    {
+      id: 1,
+      user: 'أحمد علي',
+      date: '2024-01-15',
+      rating: 5,
+      comment: 'تجربة رائعة ومناظر خلابة'
+    }
+  ],
+  ownerProfile: {
+    id: 1,
+    name: 'محمد الشامسي',
+    activitiesCount: 5,
+    bio: 'مرشد سياحي معتمد مع خبرة 10 سنوات في الجبال العمانية'
+  }
 };
 
 const ActivityDetail = () => {
@@ -43,6 +69,7 @@ const ActivityDetail = () => {
   const { user, profile, isAuthenticated } = useAuth();
   const [activity, setActivity] = useState<Activity | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Simulate loading
@@ -74,28 +101,57 @@ const ActivityDetail = () => {
     return <Navigate to="/activities" replace />;
   }
 
+  const handleLoginClick = () => {
+    navigate('/login');
+  };
+
   return (
     <Layout>
       <div className="container mx-auto py-6">
-        <ActivityHeader activity={activity} />
+        <ActivityHeader 
+          name={activity.title}
+          categoryLabel={activity.categoryLabel || 'نشاط'}
+          location={activity.location}
+        />
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
           <div className="lg:col-span-2">
-            <ActivityImageGallery images={activity.images} title={activity.title} />
-            <ActivityDetailTabs activity={activity} />
+            <ActivityImageGallery 
+              images={activity.images} 
+              name={activity.title}
+              rating={activity.rating}
+            />
+            
+            {isAuthenticated ? (
+              <ActivityDetailTabs 
+                description={activity.description}
+                amenities={activity.amenities}
+                reviews={activity.reviews || []}
+                contactPhone={activity.contactPhone || ''}
+                contactEmail={activity.contactEmail || ''}
+                website={activity.website || ''}
+                isOwner={profile?.id === activity.ownerId}
+                isAdmin={profile?.role === 'admin'}
+                activityId={parseInt(activity.id)}
+                activityName={activity.title}
+                ownerName={activity.owner}
+              />
+            ) : (
+              <ActivityAuthAlert onLoginClick={handleLoginClick} />
+            )}
           </div>
           
           <div className="space-y-6">
-            <ActivityOwnerCard activity={activity} />
-            
-            {!isAuthenticated && <ActivityAuthAlert />}
+            <ActivityOwnerCard 
+              owner={activity.owner || 'صاحب النشاط'}
+              ownerProfile={activity.ownerProfile}
+            />
             
             {isAuthenticated && (
               <ActivityBookingCalendar 
-                activity={activity}
-                onBookingComplete={(booking) => {
-                  console.log('Booking created:', booking);
-                }}
+                activityId={parseInt(activity.id)}
+                activityName={activity.title}
+                ownerName={activity.owner}
               />
             )}
           </div>
