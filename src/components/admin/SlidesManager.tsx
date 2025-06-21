@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,17 +5,19 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, Eye, EyeOff, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, EyeOff, ArrowUp, ArrowDown, Video, Image } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Slide {
   id: string;
   title: string;
   description: string;
   image_url: string;
+  video_url?: string;
   button_text?: string;
   button_link?: string;
   is_active: boolean;
@@ -32,6 +33,7 @@ const SlidesManager = () => {
     title: '',
     description: '',
     image_url: '',
+    video_url: '',
     button_text: '',
     button_link: '',
     is_active: true,
@@ -102,6 +104,7 @@ const SlidesManager = () => {
         title: '',
         description: '',
         image_url: '',
+        video_url: '',
         button_text: '',
         button_link: '',
         is_active: true,
@@ -194,6 +197,7 @@ const SlidesManager = () => {
       title: slide.title,
       description: slide.description,
       image_url: slide.image_url,
+      video_url: slide.video_url || '',
       button_text: slide.button_text || '',
       button_link: slide.button_link || '',
       is_active: slide.is_active,
@@ -213,6 +217,7 @@ const SlidesManager = () => {
                 title: '',
                 description: '',
                 image_url: '',
+                video_url: '',
                 button_text: '',
                 button_link: '',
                 is_active: true,
@@ -247,16 +252,49 @@ const SlidesManager = () => {
                   required
                 />
               </div>
-              <div>
-                <Label htmlFor="image_url">رابط الصورة</Label>
-                <Input
-                  id="image_url"
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  required
-                />
-              </div>
+              
+              <Tabs defaultValue="image" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="image" className="flex items-center gap-2">
+                    <Image className="h-4 w-4" />
+                    صورة خلفية
+                  </TabsTrigger>
+                  <TabsTrigger value="video" className="flex items-center gap-2">
+                    <Video className="h-4 w-4" />
+                    فيديو خلفية
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="image">
+                  <div>
+                    <Label htmlFor="image_url">رابط الصورة</Label>
+                    <Input
+                      id="image_url"
+                      type="url"
+                      value={formData.image_url}
+                      onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="video">
+                  <div>
+                    <Label htmlFor="video_url">رابط الفيديو</Label>
+                    <Input
+                      id="video_url"
+                      type="url"
+                      value={formData.video_url}
+                      onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
+                      placeholder="https://example.com/video.mp4"
+                    />
+                    <p className="text-sm text-gray-600 mt-1">
+                      يدعم تنسيقات MP4 و WebM. الفيديو سيتم تشغيله تلقائياً وبدون صوت.
+                    </p>
+                  </div>
+                </TabsContent>
+              </Tabs>
+
               <div>
                 <Label htmlFor="button_text">نص الزر (اختياري)</Label>
                 <Input
@@ -299,11 +337,26 @@ const SlidesManager = () => {
           {slides.map((slide, index) => (
             <div key={slide.id} className="flex items-center justify-between p-4 border rounded-lg">
               <div className="flex items-center space-x-4">
-                <img
-                  src={slide.image_url}
-                  alt={slide.title}
-                  className="w-16 h-16 object-cover rounded"
-                />
+                <div className="relative w-16 h-16 rounded overflow-hidden">
+                  {slide.video_url ? (
+                    <video
+                      src={slide.video_url}
+                      className="w-full h-full object-cover"
+                      muted
+                    />
+                  ) : (
+                    <img
+                      src={slide.image_url}
+                      alt={slide.title}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                  {slide.video_url && (
+                    <div className="absolute top-1 right-1 bg-black/50 rounded p-1">
+                      <Video className="h-3 w-3 text-white" />
+                    </div>
+                  )}
+                </div>
                 <div>
                   <h3 className="font-semibold">{slide.title}</h3>
                   <p className="text-sm text-gray-600 line-clamp-2">{slide.description}</p>
@@ -312,6 +365,11 @@ const SlidesManager = () => {
                       {slide.is_active ? 'نشط' : 'غير نشط'}
                     </Badge>
                     <span className="text-xs text-gray-500">الترتيب: {index + 1}</span>
+                    {slide.video_url && (
+                      <Badge variant="outline" className="text-xs">
+                        فيديو
+                      </Badge>
+                    )}
                   </div>
                 </div>
               </div>

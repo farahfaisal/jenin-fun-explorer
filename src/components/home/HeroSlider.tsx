@@ -9,6 +9,7 @@ interface Slide {
   title: string;
   description: string;
   image_url: string;
+  video_url?: string;
   button_text?: string;
   button_link?: string;
   is_active: boolean;
@@ -92,14 +93,27 @@ const HeroSlider = () => {
 
   return (
     <section className="relative h-[600px] overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
-        style={{
-          backgroundImage: `url(${currentSlideData.image_url})`,
-        }}
-      >
-        <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-      </div>
+      {currentSlideData.video_url ? (
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+        >
+          <source src={currentSlideData.video_url} type="video/mp4" />
+          <source src={currentSlideData.video_url} type="video/webm" />
+        </video>
+      ) : (
+        <div
+          className="absolute inset-0 bg-cover bg-center transition-all duration-1000"
+          style={{
+            backgroundImage: `url(${currentSlideData.image_url})`,
+          }}
+        />
+      )}
+      
+      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
 
       <div className="relative z-10 container mx-auto px-6 h-full flex items-center">
         <div className="text-white max-w-4xl">
