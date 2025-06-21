@@ -67,7 +67,7 @@ const HeroSlider = () => {
     const match = url.match(youtubeRegex);
     if (match) {
       const videoId = match[1];
-      return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`;
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1&enablejsapi=1`;
     }
     return null;
   };
@@ -111,20 +111,26 @@ const HeroSlider = () => {
     <section className="relative h-[600px] overflow-hidden">
       {currentSlideData.video_url ? (
         isYouTubeUrl(currentSlideData.video_url) ? (
-          <iframe
-            className="absolute inset-0 w-full h-full object-cover"
-            src={getYouTubeEmbedUrl(currentSlideData.video_url) || ''}
-            title="YouTube video background"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            style={{
-              width: '100vw',
-              height: '100vh',
-              transform: 'scale(1.2)',
-              transformOrigin: 'center center'
-            }}
-          />
+          <div className="absolute inset-0 w-full h-full">
+            <iframe
+              className="absolute inset-0 w-full h-full"
+              src={getYouTubeEmbedUrl(currentSlideData.video_url) || ''}
+              title="YouTube video background"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              style={{
+                width: '100%',
+                height: '56.25vw', // 16:9 aspect ratio
+                minHeight: '100%',
+                minWidth: '177.77vh', // 16:9 aspect ratio
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            />
+          </div>
         ) : (
           <video
             className="absolute inset-0 w-full h-full object-cover"
