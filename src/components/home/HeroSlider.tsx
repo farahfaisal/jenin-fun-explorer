@@ -61,6 +61,22 @@ const HeroSlider = () => {
     }
   }, [slides.length]);
 
+  // Function to convert YouTube URL to embed URL with autoplay
+  const getYouTubeEmbedUrl = (url: string) => {
+    const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(youtubeRegex);
+    if (match) {
+      const videoId = match[1];
+      return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`;
+    }
+    return null;
+  };
+
+  // Function to check if URL is YouTube
+  const isYouTubeUrl = (url: string) => {
+    return url.includes('youtube.com') || url.includes('youtu.be');
+  };
+
   if (isLoading) {
     return (
       <section className="relative h-96 bg-gray-200 animate-pulse">
@@ -94,16 +110,33 @@ const HeroSlider = () => {
   return (
     <section className="relative h-[600px] overflow-hidden">
       {currentSlideData.video_url ? (
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-        >
-          <source src={currentSlideData.video_url} type="video/mp4" />
-          <source src={currentSlideData.video_url} type="video/webm" />
-        </video>
+        isYouTubeUrl(currentSlideData.video_url) ? (
+          <iframe
+            className="absolute inset-0 w-full h-full object-cover"
+            src={getYouTubeEmbedUrl(currentSlideData.video_url) || ''}
+            title="YouTube video background"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{
+              width: '100vw',
+              height: '100vh',
+              transform: 'scale(1.2)',
+              transformOrigin: 'center center'
+            }}
+          />
+        ) : (
+          <video
+            className="absolute inset-0 w-full h-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+          >
+            <source src={currentSlideData.video_url} type="video/mp4" />
+            <source src={currentSlideData.video_url} type="video/webm" />
+          </video>
+        )
       ) : (
         <div
           className="absolute inset-0 bg-cover bg-center transition-all duration-1000"

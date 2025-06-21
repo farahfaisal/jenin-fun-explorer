@@ -286,10 +286,10 @@ const SlidesManager = () => {
                       type="url"
                       value={formData.video_url}
                       onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
-                      placeholder="https://example.com/video.mp4"
+                      placeholder="https://youtube.com/watch?v=... أو https://example.com/video.mp4"
                     />
                     <p className="text-sm text-gray-600 mt-1">
-                      يدعم تنسيقات MP4 و WebM. الفيديو سيتم تشغيله تلقائياً وبدون صوت.
+                      يدعم روابط YouTube أو ملفات الفيديو المباشرة (MP4, WebM). فيديوهات YouTube سيتم تشغيلها تلقائياً وبدون صوت.
                     </p>
                   </div>
                 </TabsContent>
