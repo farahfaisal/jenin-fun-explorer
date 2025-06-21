@@ -5,9 +5,9 @@ import FeaturedItemCard from './FeaturedItemCard';
 const featured = [
   {
     id: 1,
-    name: 'فندق جنين الدولي',
+    name: 'فندق فلسطين الدولي',
     category: 'hotels',
-    location: 'وسط المدينة، جنين',
+    location: 'وسط المدينة، فلسطين',
     image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1080',
     rating: 4.8
   },
@@ -15,7 +15,7 @@ const featured = [
     id: 2,
     name: 'شاليه الربيع',
     category: 'chalets',
-    location: 'شمال جنين',
+    location: 'شمال فلسطين',
     image: 'https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?auto=format&fit=crop&q=80&w=1080',
     rating: 4.6
   },
@@ -23,7 +23,7 @@ const featured = [
     id: 3,
     name: 'حديقة السلام',
     category: 'parks',
-    location: 'شرق جنين',
+    location: 'شرق فلسطين',
     image: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&q=80&w=1080',
     rating: 4.5
   },

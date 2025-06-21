@@ -12,7 +12,7 @@ const CTASection = () => {
       </div>
       
       <div className="container mx-auto px-6 text-center">
-        <h2 className="text-3xl font-bold mb-6">هل تملك نشاطاً ترفيهياً في جنين؟</h2>
+        <h2 className="text-3xl font-bold mb-6">هل تملك نشاطاً ترفيهياً في فلسطين؟</h2>
         <p className="text-xl mb-8 max-w-2xl mx-auto">
           انضم إلينا وعرض نشاطك على موقعنا ليراه الآلاف من الزوار يومياً
         </p>

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { MapPin, Search, Filter } from 'lucide-react';
@@ -11,10 +10,10 @@ import { Checkbox } from '@/components/ui/checkbox';
 const activities = [
   {
     id: 1,
-    name: 'فندق جنين الدولي',
+    name: 'فندق فلسطين الدولي',
     category: 'hotels',
-    location: 'وسط المدينة، جنين',
-    description: 'فندق فاخر في وسط مدينة جنين، يقدم خدمات متميزة وإطلالات رائعة',
+    location: 'وسط المدينة، فلسطين',
+    description: 'فندق فاخر في وسط فلسطين، يقدم خدمات متميزة وإطلالات رائعة',
     image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1080',
     rating: 4.8,
     price: '100$'
@@ -23,7 +22,7 @@ const activities = [
     id: 2,
     name: 'شاليه الربيع',
     category: 'chalets',
-    location: 'شمال جنين',
+    location: 'شمال فلسطين',
     description: 'شاليه هادئ محاط بالطبيعة الخلابة، مثالي للعائلات والاسترخاء',
     image: 'https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9?auto=format&fit=crop&q=80&w=1080',
     rating: 4.6,
@@ -33,7 +32,7 @@ const activities = [
     id: 3,
     name: 'حديقة السلام',
     category: 'parks',
-    location: 'شرق جنين',
+    location: 'شرق فلسطين',
     description: 'حديقة عامة واسعة مع مساحات خضراء وملاعب للأطفال ومناطق للشواء',
     image: 'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&q=80&w=1080',
     rating: 4.5,
@@ -43,7 +42,7 @@ const activities = [
     id: 4,
     name: 'نادي الرياضي',
     category: 'clubs',
-    location: 'غرب جنين',
+    location: 'غرب فلسطين',
     description: 'نادي رياضي متكامل يضم صالة ألعاب رياضية وحمام سباحة وملاعب متعددة',
     image: 'https://images.unsplash.com/photo-1574936145840-28808d77a0b6?auto=format&fit=crop&q=80&w=1080',
     rating: 4.7,
@@ -53,7 +52,7 @@ const activities = [
     id: 5,
     name: 'فندق الواحة',
     category: 'hotels',
-    location: 'جنوب جنين',
+    location: 'جنوب فلسطين',
     description: 'فندق عصري بخدمات متميزة ومطعم يقدم أشهى المأكولات المحلية والعالمية',
     image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&q=80&w=1080',
     rating: 4.4,
@@ -63,7 +62,7 @@ const activities = [
     id: 6,
     name: 'شاليه النخيل',
     category: 'chalets',
-    location: 'أطراف جنين',
+    location: 'أطراف فلسطين',
     description: 'شاليه فاخر مع مسبح خاص وإطلالات خلابة على المناظر الطبيعية المحيطة',
     image: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&q=80&w=1080',
     rating: 4.9,
@@ -131,8 +130,8 @@ const Activities = () => {
       {/* Header */}
       <section className="bg-secondary/50 py-10">
         <div className="container mx-auto px-6">
-          <h1 className="text-3xl font-bold mb-4">الأنشطة الترفيهية في جنين</h1>
-          <p className="text-lg text-gray-600 mb-6">اكتشف مجموعة متنوعة من الأنشطة الترفيهية في مدينة جنين</p>
+          <h1 className="text-3xl font-bold mb-4">الأنشطة الترفيهية في فلسطين</h1>
+          <p className="text-lg text-gray-600 mb-6">اكتشف مجموعة متنوعة من الأنشطة الترفيهية في فلسطين</p>
           
           {/* Search bar */}
           <div className="flex items-center bg-white rounded-lg overflow-hidden shadow-md p-2 max-w-2xl">
